@@ -470,3 +470,30 @@ body {
 .login-button:hover {
   background-color: #ff0e86;
 }
+
+.signup-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 10px 20px;
+  background-color: #ff4081;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.signup-link:hover {
+  background-color: #e91e63;
+}
+
+.home-banner {
+  width: 90%;
+  max-width: 400px;
+  height: auto;
+  margin: 1.5rem auto;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #ff4081;
+}
+
