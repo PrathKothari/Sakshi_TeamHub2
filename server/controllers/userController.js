@@ -33,5 +33,39 @@ const userRegistration = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+const userLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-export { userRegistration };
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    // Compare passwords (no hashing)
+    if (user.password !== password) {
+      return res.status(401).json({ message: 'Incorrect password' });
+    }
+
+    // Prepare response without password
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.status(200).json({
+      message: 'Login successful',
+      user: userResponse
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+
+export {
+  userRegistration,
+  userLogin
+};
+
