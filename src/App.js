@@ -1,11 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'; // ✅ include Link if used
+import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import TeamDetails from './pages/TeamDetails';
 import Login from './pages/Login';
-import Signup from './pages/Signup';
 import './App.css';
-import { Link } from 'react-router-dom';
+import Signup from './pages/Signup'; // ✅ Import Signup
+
 
 function LandingPage() {
   return (
@@ -22,16 +23,18 @@ function App() {
   return (
     <div className="App">
       <Router>
+        <Navbar />  {/* ✅ Navbar is outside Routes so it shows on all pages */}
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/team/:id" element={<TeamDetails />} />
-          <Route path="/signup" element={<Signup />} />
-        </Routes>
+  <Route path="/" element={<Login />} />
+  <Route path="/home" element={<Home />} />
+  <Route path="/team/:id" element={<TeamDetails />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/signup" element={<Signup />} />  {/* ✅ Add Signup route */}
+</Routes>
       </Router>
     </div>
   );
 }
 
 export default App;
+
