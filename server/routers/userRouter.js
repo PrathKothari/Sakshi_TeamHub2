@@ -6,7 +6,7 @@ import {
  } from '../controllers/userController.js';
 import { AuthenticationMiddleware } from '../middlewares/authHandlerMiddleware.js';
 
-const router = express.Router();
+const userRouter = express.Router();
 
 userRouter.post('/register',userRegistration)
 userRouter.post('/signin',userSignIn) //👈 your login route
@@ -18,4 +18,4 @@ userRouter.get('/signout', (req, res) => {
 userRouter.get('/profile',AuthenticationMiddleware, getProfileOfUser)
 
 
-export default router;
+export default userRouter;
