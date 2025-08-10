@@ -331,6 +331,14 @@ body {
 /* Team Details Page Styles */
 .team-details-header {
   margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+}
+
+.team-details-header .back-button {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .back-button {
@@ -342,7 +350,6 @@ body {
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 20px;
   transition: background-color 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -353,8 +360,29 @@ body {
   background: #e91e63;
 }
 
+/* Toggle button for testing (remove in production) */
+.toggle-login-button {
+  background: #333;
+  color: #ff4081;
+  border: 1px solid #ff4081;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 20px auto;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.toggle-login-button:hover {
+  background: #ff4081;
+  color: #111;
+}
+
 .team-info {
   text-align: center;
+  margin-top: 60px; /* Add space for the back button */
 }
 
 .team-info h1 {
@@ -486,6 +514,26 @@ body {
   background-color: #ff0e86;
 }
 
+/* Forgot Password button */
+.forgot-password-button {
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  color: #ff69b4;
+  border: 1px solid #ff69b4;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.forgot-password-button:hover {
+  background-color: #ff69b4;
+  color: #111;
+}
+
 .signup-link {
   display: inline-block;
   margin-top: 1.5rem;
@@ -518,5 +566,224 @@ body {
   margin-bottom: 20px;
   font-weight: bold;
   margin: 40px 0;
+}
+
+/* Team Actions Section (for logged in users) */
+.team-actions-section {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.team-actions-container {
+  background: #1f1f1f;
+  border-radius: 15px;
+  padding: 40px;
+  text-align: center;
+  border: 1px solid #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
+}
+
+.team-actions-title {
+  color: #ff4081;
+  font-size: 1.6em;
+  font-weight: 600;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.team-actions-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.team-action-button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 160px;
+  text-align: center;
+}
+
+.join-button {
+  background-color: #ff4081;
+  color: #111;
+}
+
+.join-button:hover {
+  background-color: #e91e63;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 64, 129, 0.4);
+}
+
+.create-button {
+  background-color: transparent;
+  color: #ff4081;
+  border: 2px solid #ff4081;
+}
+
+.create-button:hover {
+  background-color: #ff4081;
+  color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 64, 129, 0.4);
+}
+
+/* Auth Required Section (for non-logged in users) */
+.auth-required-section {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-required-container {
+  background: #1f1f1f;
+  border-radius: 15px;
+  padding: 40px;
+  text-align: center;
+  border: 1px solid #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
+}
+
+.auth-required-title {
+  color: #ff4081;
+  font-size: 1.6em;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-required-message {
+  color: #ccc;
+  font-size: 1.2em;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.auth-required-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.auth-button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  width: 140px;
+  text-align: center;
+}
+
+.auth-button.login-button {
+  background-color: #ff4081;
+  color: #111;
+}
+
+.auth-button.login-button:hover {
+  background-color: #e91e63;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 64, 129, 0.4);
+}
+
+.auth-button.signup-button {
+  background-color: transparent;
+  color: #ff4081;
+  border: 2px solid #ff4081;
+}
+
+.auth-button.signup-button:hover {
+  background-color: #ff4081;
+  color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 64, 129, 0.4);
+}
+
+/* Responsive design for new sections */
+@media (max-width: 768px) {
+  .team-actions-buttons,
+  .auth-required-buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .team-action-button,
+  .auth-button {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .team-actions-container,
+  .auth-required-container {
+    padding: 30px 20px;
+    margin: 0 10px;
+  }
+  
+  .team-details-header {
+    padding: 0 20px;
+  }
+  
+  .team-details-header .back-button {
+    position: static;
+    margin-bottom: 20px;
+  }
+  
+  .team-info {
+    margin-top: 0;
+  }
+  
+  .team-info h1 {
+    font-size: 2em;
+  }
+  
+  .toggle-login-button {
+    margin: 20px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-actions-container,
+  .auth-required-container {
+    padding: 25px 15px;
+  }
+  
+  .team-actions-title,
+  .auth-required-title {
+    font-size: 1.4em;
+  }
+  
+  .auth-required-message {
+    font-size: 1em;
+  }
+  
+  .team-action-button,
+  .auth-button {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
 }
 

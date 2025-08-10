@@ -12,6 +12,7 @@ function Login() {
           <input type="text" placeholder="Username" className="login-input" />
           <input type="password" placeholder="Password" className="login-input" />
           <button type="submit" className="login-button">Login</button>
+          <button type="button" className="forgot-password-button">Forgot Password?</button>
         </form>
       </div>
     </div>
