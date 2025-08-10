@@ -240,11 +240,26 @@ body {
   box-shadow: 0 0 10px #ff4081;
 }
 
+.welcome-text-signup {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 40px 0;
+}
+
+.signup-box {
+  background-color: #1a1a1a;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(255, 20, 147, 0.3);
+  width: 350px;
+  margin: 0 auto 40px auto; /* 40px space below */
+}
+
+
 .add-profile-form {
   display: flex;
   flex-direction: column;
-  width: 300px;
-  margin: 1rem auto;
   gap: 0.5rem;
 }
 
@@ -266,7 +281,7 @@ body {
 .add-profile-form button {
   padding: 0.6rem;
   background-color: #ff4081;
-  color: white;
+  color: #111;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -495,5 +510,13 @@ body {
   display: block;
   border-radius: 12px;
   box-shadow: 0 0 12px #ff4081;
+}
+.welcome-text-signup {
+  text-align: center;
+  color: #ff4fc3;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  margin: 40px 0;
 }
 
