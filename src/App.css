@@ -787,3 +787,155 @@ body {
   }
 }
 
+/* ===== Page Layout ===== */
+.join-team-page {
+  padding: 20px;
+  background-color: #0d0d0d; /* Dark background */
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+}
+
+/* ===== Hero Section ===== */
+.join-hero {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.join-hero h1 {
+  color: #ff4f9b; /* Bright pink */
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.join-hero p {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  padding: 12px 15px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 25px;
+  border: 1px solid #ff4f9b;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.2s;
+}
+
+.search-bar::placeholder {
+  color: #aaa;
+}
+
+.search-bar:focus {
+  border-color: #ff4f9b;
+  box-shadow: 0 0 6px rgba(255, 79, 155, 0.6);
+}
+
+/* ===== Team List ===== */
+.team-list {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* ===== Team Card ===== */
+.team-card {
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(255, 79, 155, 0.15);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(255, 79, 155, 0.25);
+}
+
+.team-card h2 {
+  color: #ff4f9b;
+  margin-bottom: 8px;
+}
+
+.team-description {
+  color: #bbb;
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+}
+
+/* ===== Skills Tags ===== */
+.skills {
+  margin-bottom: 10px;
+}
+
+.skill-tag {
+  display: inline-block;
+  background: rgba(255, 79, 155, 0.15);
+  color: #ff4f9b;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin: 3px;
+}
+
+/* ===== Members & Status ===== */
+.members {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin: 5px 0;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.status-badge.open {
+  background: rgba(0, 200, 83, 0.15);
+  color: #4caf50;
+}
+
+.status-badge.full {
+  background: rgba(255, 82, 82, 0.15);
+  color: #ff5252;
+}
+
+/* ===== Join Button ===== */
+.join-btn {
+  background-color: #ff4f9b;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.2s;
+}
+
+.join-btn:hover:enabled {
+  background-color: #e13f87;
+  box-shadow: 0 0 10px rgba(255, 79, 155, 0.5);
+}
+
+.join-btn:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* ===== No Teams Message ===== */
+.no-teams {
+  text-align: center;
+  color: #888;
+  font-size: 1rem;
+  grid-column: 1 / -1;
+}
+

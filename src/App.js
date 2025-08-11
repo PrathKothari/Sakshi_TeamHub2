@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import './App.css';
 import { AuthProvider } from './context/AuthContext';
 import Signup from './pages/Signup'; 
+import JoinTeam from "./pages/joinTeam";
 import CreateTeam from './pages/create_team'; 
 
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/team/:id" element={<TeamDetails />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />  {/* ✅ Add Signup route */}
+            <Route path="/join-team" element={<JoinTeam />} />
           </Routes>
         </Router>
       </AuthProvider>
