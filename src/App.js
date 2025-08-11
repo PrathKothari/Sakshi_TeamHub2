@@ -6,7 +6,7 @@ import TeamDetails from './pages/TeamDetails';
 import Login from './pages/Login';
 import './App.css';
 import Signup from './pages/Signup'; // ✅ Import Signup
-
+import { AuthProvider } from './context/AuthContext';
 
 function LandingPage() {
   return (
@@ -22,16 +22,17 @@ function LandingPage() {
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Navbar />  {/* ✅ Navbar is outside Routes so it shows on all pages */}
-        <Routes>
-  <Route path="/" element={<Login />} />
-  <Route path="/home" element={<Home />} />
-  <Route path="/team/:id" element={<TeamDetails />} />
-  <Route path="/login" element={<Login />} />
-  <Route path="/signup" element={<Signup />} />  {/* ✅ Add Signup route */}
-</Routes>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <Navbar />  {/* ✅ Navbar is outside Routes so it shows on all pages */}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/team/:id" element={<TeamDetails />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />  {/* ✅ Add Signup route */}
+          </Routes>
+        </Router>
+      </AuthProvider>
     </div>
   );
 }

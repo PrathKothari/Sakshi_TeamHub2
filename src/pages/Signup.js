@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../App.css'; // Make sure this path is correct
+import { Link, useNavigate } from 'react-router-dom';
+import '../App.css';
+import userApi from '../apis/services/userApi';
 
 function Signup() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    role: '',
-    description: ''
+    confirmPassword: ''
   });
 
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Password match check
@@ -28,8 +28,23 @@ function Signup() {
     }
 
     setError('');
-    console.log(formData);
-    // Add your signup logic here
+
+    try {
+      await userApi.registerUser({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      });
+
+      // On success, redirect to login
+      navigate('/login');
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('Signup failed. Please try again.');
+      }
+    }
   };
 
   return (
@@ -74,27 +89,15 @@ function Signup() {
             required
           />
 
-          <input
-            type="text"
-            name="role"
-            placeholder="Role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-          />
-
-          <textarea
-            name="description"
-            placeholder="Description about the Role"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          ></textarea>
-
           {error && <p className="error-message">{error}</p>}
 
           <button type="submit">Sign Up</button>
         </form>
+
+        {/* Already have an account */}
+        <p style={{ marginTop: '1rem' }}>
+          Already have an account? <Link to="/login">Login here</Link>
+        </p>
       </div>
     </div>
   );

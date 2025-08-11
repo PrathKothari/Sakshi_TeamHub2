@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import userApi from '../apis/services/userApi';
 
 const Home = () => {
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch user profile on component mount
+    const fetchUserProfile = async () => {
+      try {
+        const response = await userApi.getUserProfile();
+        console.log('User Profile:', response.data);
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+    useEffect(()=>{
+      fetchUserProfile();
+    })
   // Mock teams data 
   const mockTeams = [
     {
