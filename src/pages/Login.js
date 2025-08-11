@@ -48,7 +48,7 @@ function Login() {
         <form onSubmit={handleLogin}>
           <input
             type="text"
-            placeholder="Username"
+            placeholder="Email"
             className="login-input"
             value={username}
             onChange={(e) => setUsername(e.target.value)}

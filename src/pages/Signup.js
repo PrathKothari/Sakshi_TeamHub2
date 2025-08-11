@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
 import userApi from '../apis/services/userApi';
+import { AuthContext } from '../context/AuthContext';
 
 function Signup() {
+  const { setIsLoggedIn } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -35,9 +37,9 @@ function Signup() {
         email: formData.email,
         password: formData.password
       });
-
       // On success, redirect to login
-      navigate('/login');
+      setIsLoggedIn(true); // Update login status
+      navigate('/');
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
