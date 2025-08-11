@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ProfileCard from '../components/ProfileCard';
 import Modal from '../components/Modal';
 
+
 const TeamDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const TeamDetails = () => {
 
   const handleJoinTeam = () => {
     // Implement join team logic here
-    alert('Join team functionality to be implemented');
+    navigate('/join-team');
   };
 
   const handleCreateTeam = () => {
