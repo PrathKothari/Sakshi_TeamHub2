@@ -939,3 +939,48 @@ body {
   grid-column: 1 / -1;
 }
 
+/* Gender dropdown */
+.add-profile-form select {
+  /* width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #2A2A2A;
+  font-size: 16px;
+  margin-bottom: 15px;
+  outline: none;
+  transition: all 0.2s ease; */
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background-color: #2a2a2a;
+  color: white;
+  font-family: inherit;
+}
+
+.add-profile-form select:focus {
+  border-color: #4cafef; /* match your site's theme color */
+  box-shadow: 0 0 4px rgba(76, 175, 239, 0.4);
+}
+
+/* Custom file input styling */
+.custom-file-upload {
+  display: inline-block;
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: #4cafef; /* match your site theme */
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.custom-file-upload:hover {
+  background-color: #3a9edb;
+}
+
+/* Hide the default file input */
+input[type="file"] {
+  display: none;
+}
