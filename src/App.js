@@ -5,7 +5,8 @@ import Home from './pages/Home';
 import TeamDetails from './pages/TeamDetails';
 import Login from './pages/Login';
 import './App.css';
-import Signup from './pages/Signup'; // ✅ Import Signup
+import Signup from './pages/Signup'; 
+import CreateTeam from './pages/create_team'; 
 
 
 function LandingPage() {
@@ -25,16 +26,16 @@ function App() {
       <Router>
         <Navbar />  {/* ✅ Navbar is outside Routes so it shows on all pages */}
         <Routes>
-  <Route path="/" element={<Login />} />
-  <Route path="/home" element={<Home />} />
-  <Route path="/team/:id" element={<TeamDetails />} />
-  <Route path="/login" element={<Login />} />
-  <Route path="/signup" element={<Signup />} />  {/* ✅ Add Signup route */}
-</Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/team/:id" element={<TeamDetails />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />  {/* ✅ Add Signup route */}
+          <Route path="/create-team" element={<CreateTeam />} /> {/* ✅ Add CreateTeam route */}
+        </Routes>
       </Router>
     </div>
   );
 }
 
 export default App;
-
