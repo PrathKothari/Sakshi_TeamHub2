@@ -5,8 +5,10 @@ import Home from './pages/Home';
 import TeamDetails from './pages/TeamDetails';
 import Login from './pages/Login';
 import './App.css';
-import Signup from './pages/Signup'; // ✅ Import Signup
 import { AuthProvider } from './context/AuthContext';
+import Signup from './pages/Signup'; 
+import CreateTeam from './pages/create_team'; 
+
 
 function LandingPage() {
   return (
@@ -38,4 +40,3 @@ function App() {
 }
 
 export default App;
-

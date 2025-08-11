@@ -15,7 +15,7 @@ userRouter.get('/signout', (req, res) => {
     res.clearCookie("user").json({ message: 'User signed out successfully' });
 }); 
 
-userRouter.get('/profile',AuthenticationMiddleware, getProfileOfUser)
+userRouter.get('/profile', AuthenticationMiddleware, getProfileOfUser)
 
 
 export default userRouter;
