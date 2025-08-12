@@ -6,6 +6,7 @@ import connectDB from './utiles/db.js';
 import cookieParser from 'cookie-parser';
 
 import userRouter from './routers/userRouter.js';
+import teamRouter from './routers/teamRouter.js';
 dotenv.config();
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(cookieParser());
 const PORT = process.env.PORT || 5000;
 
 app.use('/api/users', userRouter);
+app.use('/api/teams', teamRouter);
 app.get('/', (req, res) => {
   res.send('Welcome to TeamHub Backend!');
 });

@@ -1,42 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../App.css";
+import teamApi from "../apis/services/teamApi";
 
 const JoinTeam = () => {
-  const [teams] = useState([
-    {
-      id: 1,
-      name: "Team Phoenix",
-      description: "Building an AI-powered analytics dashboard.",
-      skills: ["React", "Python", "Azure"],
-      members: 3,
-      maxMembers: 5,
-      status: "Open"
-    },
-    {
-      id: 2,
-      name: "Data Wizards",
-      description: "Data visualization and storytelling project.",
-      skills: ["Power BI", "SQL", "Python"],
-      members: 5,
-      maxMembers: 5,
-      status: "Full"
-    },
-    {
-      id: 3,
-      name: "Code Ninjas",
-      description: "Mobile app development challenge.",
-      skills: ["Flutter", "Firebase"],
-      members: 2,
-      maxMembers: 4,
-      status: "Open"
-    }
-  ]);
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
 
   const handleJoin = (teamName) => {
     alert(`Join request sent to ${teamName}`);
   };
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        setLoading(true);
+        const { data } = await teamApi.listTeams();
+        const mapped = (data.teams || []).map((t) => ({
+          id: t._id,
+          name: t.name,
+          description: t.description,
+          skills: t.skills || [],
+          members: t.membersCount ?? 0,
+          maxMembers: t.maxMembers,
+          status: (t.membersCount ?? 0) < t.maxMembers ? "Open" : "Full",
+        }));
+        setTeams(mapped);
+      } catch (err) {
+        const message = err?.response?.data?.message || "Failed to load teams";
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTeams();
+  }, []);
 
   const filteredTeams = teams.filter((team) =>
     team.name.toLowerCase().includes(search.toLowerCase())
@@ -59,7 +59,9 @@ const JoinTeam = () => {
 
       {/* Team Cards */}
       <div className="team-list">
-        {filteredTeams.length > 0 ? (
+        {loading && <p>Loading teams...</p>}
+        {error && <p className="error-message">{error}</p>}
+        {!loading && !error && filteredTeams.length > 0 ? (
           filteredTeams.map((team) => (
             <div key={team.id} className="team-card">
               <h2>{team.name}</h2>

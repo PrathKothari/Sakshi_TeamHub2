@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import teamApi from "../apis/services/teamApi";
 
 function CreateTeam() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function CreateTeam() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Frontend validation
@@ -41,24 +42,23 @@ function CreateTeam() {
 
     setError("");
 
-    // Generate hidden teamId
-    const teamId = generateTeamId();
+    try {
+      const payload = {
+        teamName: formData.teamName,
+        teamAim: formData.teamAim,
+        description: formData.description,
+        maxMembers: Number(formData.maxMembers || 2),
+      };
 
-    // Final team data including hidden ID
-    const finalTeamData = {
-      ...formData,
-      teamId, // Hidden from UI, but can be sent to backend
-    };
-
-    // Simulate API call
-    console.log("Team Created:", finalTeamData);
-
-    setSuccess(`Team "${formData.teamName}" created successfully!`);
-
-    // Simulate redirect after success
-    setTimeout(() => {
-      navigate("/home"); // Later: navigate(`/team/${teamId}`)
-    }, 1500);
+      const { data } = await teamApi.createTeam(payload);
+      setSuccess(`Team "${data.team.name}" created successfully!`);
+      setTimeout(() => {
+        navigate("/join-team");
+      }, 1000);
+    } catch (err) {
+      const message = err?.response?.data?.message || "Failed to create team";
+      setError(message);
+    }
   };
 
   return (
