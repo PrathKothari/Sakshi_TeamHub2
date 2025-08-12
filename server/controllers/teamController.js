@@ -8,6 +8,10 @@ export const createTeam = async (req, res) => {
       return res.status(400).json({ message: 'teamName, teamAim and maxMembers are required' });
     }
 
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+
     const team = await Team.create({
       name: teamName,
       aim: teamAim,
@@ -36,7 +40,15 @@ export const listTeams = async (_req, res) => {
       .populate('members', 'username email profilePicture')
       .sort({ createdAt: -1 });
     
-    return res.json({ teams });
+    // Ensure createdBy is properly populated
+    const teamsWithCreator = teams.map(team => {
+      if (!team.createdBy) {
+        console.warn(`Team ${team._id} has no createdBy field`);
+      }
+      return team;
+    });
+    
+    return res.json({ teams: teamsWithCreator });
   } catch (error) {
     console.error('List teams error:', error);
     return res.status(500).json({ message: 'Internal server error' });

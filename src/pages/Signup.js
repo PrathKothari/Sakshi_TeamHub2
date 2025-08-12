@@ -5,7 +5,7 @@ import userApi from '../apis/services/userApi';
 import { AuthContext } from '../context/AuthContext';
 
 function Signup() {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn, updateUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -32,14 +32,21 @@ function Signup() {
     setError('');
 
     try {
-      await userApi.registerUser({
+      const response = await userApi.registerUser({
         username: formData.username,
         email: formData.email,
         password: formData.password
       });
-      // On success, redirect to login
-      setIsLoggedIn(true); // Update login status
-      navigate('/');
+      
+      // On success, set user data and redirect
+      if (response?.data?.user) {
+        setIsLoggedIn(true);
+        updateUser(response.data.user);
+        navigate('/');
+      } else {
+        // If no user data in response, redirect to login
+        navigate('/login');
+      }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);

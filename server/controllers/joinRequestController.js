@@ -20,7 +20,7 @@ export const createJoinRequest = async (req, res) => {
 
     // Check if team is full
     if (team.isFull) {
-      return res.status(400).json({ message: 'Team is full' });
+      return res.status(400).json({ message: 'Cannot join: team is full' });
     }
 
     // Check if user is already a member
@@ -46,13 +46,10 @@ export const createJoinRequest = async (req, res) => {
       message: message || '',
     });
 
-    // Populate user details for response
-    await joinRequest.populate('userId', 'username email profilePicture role experience');
+    // Populate user details
+    await joinRequest.populate('userId', 'username email profilePicture role experience location age gender');
 
-    return res.status(201).json({
-      message: 'Join request sent successfully',
-      joinRequest
-    });
+    return res.status(201).json({ message: 'Join request sent successfully', joinRequest });
   } catch (error) {
     console.error('Create join request error:', error);
     return res.status(500).json({ message: 'Internal server error' });

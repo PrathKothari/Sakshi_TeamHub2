@@ -26,22 +26,24 @@ function CreateTeam() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     // Frontend validation
-    if (!formData.teamName.trim() || !formData.teamAim.trim()) {
-      setError("Please fill in all required fields");
-      setSuccess("");
+    if (!formData.teamName.trim()) {
+      setError("Team name is required");
       return;
     }
-
-    if (formData.maxMembers && formData.maxMembers < 2) {
-      setError("Max members must be at least 2");
-      setSuccess("");
+    if (!formData.teamAim.trim()) {
+      setError("Team aim is required");
+      return;
+    }
+    if (!formData.maxMembers || formData.maxMembers < 2) {
+      setError("Team must have at least 2 members");
       return;
     }
 
     setError("");
-
+    setSuccess("");
+    
     try {
       const payload = {
         teamName: formData.teamName,
@@ -49,8 +51,9 @@ function CreateTeam() {
         description: formData.description,
         maxMembers: Number(formData.maxMembers || 2),
       };
-
+      
       const { data } = await teamApi.createTeam(payload);
+      
       setSuccess(`Team "${data.team.name}" created successfully!`);
       setTimeout(() => {
         navigate("/join-team");

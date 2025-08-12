@@ -6,29 +6,10 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn, currentUser, logout } = useContext(AuthContext);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const res = await userApi.getUserProfile();
-        
-        if (res && res.data) {
-          setIsLoggedIn(true);
-          setUserProfile(res.data);
-        }
-      } catch (err) {
-        setIsLoggedIn(false);
-        setUserProfile(null);
-      }
-    };
-
-    checkLoginStatus();
-  }, [setIsLoggedIn]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -47,8 +28,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await userApi.signOutUser();
-      setIsLoggedIn(false);
-      setUserProfile(null);
+      logout();
       setShowDropdown(false);
       navigate('/');
     } catch (error) {
@@ -85,15 +65,15 @@ const Navbar = () => {
               aria-label="User profile menu"
             >
               <div className="profile-avatar">
-                {userProfile?.profilePicture ? (
+                {currentUser?.profilePicture ? (
                   <img 
-                    src={userProfile.profilePicture} 
+                    src={currentUser.profilePicture} 
                     alt="Profile" 
                     className="avatar-img"
                   />
                 ) : (
                   <div className="avatar-placeholder">
-                    {userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'U'}
+                    {currentUser?.username ? currentUser.username.charAt(0).toUpperCase() : 'U'}
                   </div>
                 )}
               </div>
@@ -103,8 +83,8 @@ const Navbar = () => {
             {showDropdown && (
               <div className="profile-dropdown">
                 <div className="dropdown-header">
-                  <p className="user-name">{userProfile?.name || 'User'}</p>
-                  <p className="user-email">{userProfile?.email || ''}</p>
+                  <p className="user-name">{currentUser?.username || 'User'}</p>
+                  <p className="user-email">{currentUser?.email || ''}</p>
                 </div>
                 <hr className="dropdown-divider" />
                 <button 

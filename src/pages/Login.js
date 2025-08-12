@@ -8,14 +8,16 @@ function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(''); // ✅ error state
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn, updateUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const response = await userApi.getUserProfile();
-        if (response?.data) {
+        if (response?.data?.user) {
+          setIsLoggedIn(true);
+          updateUser(response.data.user);
           navigate('/');
         }
       } catch (error) {
@@ -23,16 +25,19 @@ function Login() {
       }
     };
     fetchUserProfile();
-  }, [navigate]);
+  }, [navigate, setIsLoggedIn, updateUser]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage(''); // clear old errors
 
     try {
-      await userApi.signInUser({ email: username, password });
-      setIsLoggedIn(true);
-      navigate('/');
+      const response = await userApi.signInUser({ email: username, password });
+      if (response?.data?.user) {
+        setIsLoggedIn(true);
+        updateUser(response.data.user);
+        navigate('/');
+      }
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.message || 'Login failed');

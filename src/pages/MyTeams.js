@@ -1,28 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import teamApi from '../apis/services/teamApi';
 import JoinRequestsManager from '../components/JoinRequestsManager';
 import '../App.css';
 
 const MyTeams = () => {
   const navigate = useNavigate();
+  const { isLoggedIn, currentUser, loading: authLoading } = useContext(AuthContext);
   const [myTeams, setMyTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedTeam, setSelectedTeam] = useState(null);
 
   useEffect(() => {
-    fetchMyTeams();
-  }, []);
+    if (currentUser && !authLoading) {
+      fetchMyTeams();
+    }
+  }, [currentUser, authLoading]);
 
   const fetchMyTeams = async () => {
+    if (!currentUser) return;
+    
     try {
       setLoading(true);
       const { data } = await teamApi.listTeams();
+      
       // Filter teams where current user is the creator
-      const userTeams = (data.teams || []).filter(team => 
-        team.createdBy && team.createdBy._id === localStorage.getItem('userId')
-      );
+      const userTeams = (data.teams || []).filter(team => {
+        // Convert both IDs to strings for comparison
+        const teamCreatorId = team.createdBy?._id?.toString();
+        const currentUserId = currentUser._id?.toString();
+        return teamCreatorId && currentUserId && teamCreatorId === currentUserId;
+      });
+      
       setMyTeams(userTeams);
     } catch (err) {
       const message = err?.response?.data?.message || "Failed to load your teams";
@@ -44,6 +55,14 @@ const MyTeams = () => {
     // Refresh teams list when join requests are updated
     fetchMyTeams();
   };
+
+  if (authLoading) {
+    return <div className="my-teams-loading">Checking authentication...</div>;
+  }
+
+  if (!isLoggedIn) {
+    return <div className="my-teams-error">Please log in to view your teams.</div>;
+  }
 
   if (loading) {
     return <div className="my-teams-loading">Loading your teams...</div>;

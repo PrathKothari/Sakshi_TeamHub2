@@ -1642,7 +1642,7 @@ input[type="file"] {
 }
 
 .my-team-card {
-  background: white;
+  background: rgb(2, 0, 1);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -1652,7 +1652,7 @@ input[type="file"] {
 
 .my-team-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(93, 87, 87, 0.15);
 }
 
 .team-header {
@@ -1664,7 +1664,7 @@ input[type="file"] {
 
 .team-header h3 {
   margin: 0;
-  color: #333;
+  color: #79033c;
   font-size: 1.3rem;
 }
 
