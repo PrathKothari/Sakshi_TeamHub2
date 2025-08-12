@@ -72,6 +72,7 @@ const Navbar = () => {
           <>
             <li><Link to="/join-team">Join a Team</Link></li>
             <li><Link to="/create-team">Create Your Team</Link></li>
+            <li><Link to="/my-teams">My Teams</Link></li>
           </>
         )}
 
