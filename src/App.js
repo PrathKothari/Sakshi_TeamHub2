@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'; // ✅ include Link if used
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import TeamDetails from './pages/TeamDetails';
 import Login from './pages/Login';
@@ -28,16 +29,21 @@ function App() {
     <div className="App">
       <AuthProvider>
         <Router>
-          <Navbar />  {/* ✅ Navbar is outside Routes so it shows on all pages */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/team/:id" element={<TeamDetails />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />  {/* ✅ Add Signup route */}
-            <Route path="/join-team" element={<JoinTeam />} />
-            <Route path="/updateprofile" element={<ProfilePage />} />
-
-          </Routes>
+          <div className="app-layout">
+            <Navbar />  {/* ✅ Navbar is outside Routes so it shows on all pages */}
+            <main className="main-content">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/team/:id" element={<TeamDetails />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />  {/* ✅ Add Signup route */}
+                <Route path="/join-team" element={<JoinTeam />} />
+                <Route path="/create-team" element={<CreateTeam />} />
+                <Route path="/updateprofile" element={<ProfilePage />} />
+              </Routes>
+            </main>
+            <Footer />  {/* ✅ Footer is outside Routes so it shows on all pages */}
+          </div>
         </Router>
       </AuthProvider>
     </div>
