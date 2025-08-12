@@ -6,5 +6,6 @@ const userApi = {
     signInUser: (credentials) => axiosInstance.post(`${User}/signin`, credentials),
     signOutUser: () => axiosInstance.get(`${User}/signout`),
     getUserProfile: () => axiosInstance.get(`${User}/profile`),
+    updateUserProfile: (updateData) => axiosInstance.patch(`${User}/update`,updateData),
 }
 export default userApi;

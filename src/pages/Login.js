@@ -7,6 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // ✅ error state
   const { setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -26,16 +27,17 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setErrorMessage(''); // clear old errors
 
     try {
       await userApi.signInUser({ email: username, password });
-      setIsLoggedIn(true); // ✅ instantly update navbar
+      setIsLoggedIn(true);
       navigate('/');
     } catch (error) {
       if (error.response) {
-        console.error('Login failed:', error.response.data.message);
+        setErrorMessage(error.response.data.message || 'Login failed');
       } else {
-        console.error('Error during login:', error.message);
+        setErrorMessage(error.message || 'Something went wrong');
       }
     }
   };
@@ -60,6 +62,14 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+
+          {/* ✅ Error Message Display */}
+          {errorMessage && (
+            <p style={{ color: 'red', fontSize: '14px', marginTop: '5px', marginBottom: '10px' }}>
+              {errorMessage}
+            </p>
+          )}
+
           <button type="submit" className="login-button">Login</button>
           <button type="button" className="forgot-password-button">Forgot Password?</button>
         </form>

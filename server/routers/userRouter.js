@@ -3,6 +3,7 @@ import {
     userRegistration,
     userSignIn,
     getProfileOfUser,
+    updateUserProfile,
  } from '../controllers/userController.js';
 import { AuthenticationMiddleware } from '../middlewares/authHandlerMiddleware.js';
 
@@ -14,6 +15,7 @@ userRouter.post('/signin',userSignIn) //👈 your login route
 userRouter.get('/signout', (req, res) => {
     res.clearCookie("user").json({ message: 'User signed out successfully' });
 }); 
+userRouter.patch('/update', AuthenticationMiddleware,updateUserProfile);
 
 userRouter.get('/profile', AuthenticationMiddleware, getProfileOfUser)
 

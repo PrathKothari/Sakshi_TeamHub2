@@ -16,6 +16,7 @@ const Navbar = () => {
     const checkLoginStatus = async () => {
       try {
         const res = await userApi.getUserProfile();
+        
         if (res && res.data) {
           setIsLoggedIn(true);
           setUserProfile(res.data);

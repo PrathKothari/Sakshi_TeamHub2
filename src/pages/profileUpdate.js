@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../App.css";
+import userApi from "../apis/services/userApi";
 
 function ProfilePage() {
   const [profile, setProfile] = useState({
-    username: "john_doe", // fetched from backend ideally
+    username: "",
+    email: "",
     age: "",
     gender: "",
     role: "",
@@ -16,6 +18,26 @@ function ProfilePage() {
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [message, setMessage] = useState("");
 
+  // Fetch profile when component mounts
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await userApi.getUserProfile();
+        console.log(response.data.user);
+        
+        if (response?.data) {
+          setProfile((prev) => ({
+            ...prev,
+            ...response.data.user, // Prefill from backend
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
@@ -23,28 +45,30 @@ function ProfilePage() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // TODO: Implement backend upload logic here
-      // Example: send 'file' to backend using FormData and axios
       setProfile({ ...profile, profilePicture: URL.createObjectURL(file) });
+      // TODO: Upload to backend with FormData
     }
   };
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    console.log("Updated profile:", profile);
-    setMessage("Profile updated successfully!");
+    setMessage("");
+
+    try {
+      const { profilePicture, ...updateData } = profile; // exclude picture for now
+      const response = await userApi.updateUserProfile(updateData);
+      setMessage(response.data.message);
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Failed to update profile");
+    }
+
     setTimeout(() => setMessage(""), 3000);
-    // Send `profile` data to backend API
   };
 
   const toggleUsernameEdit = () => {
-    if (isEditingUsername) {
-      console.log("New username:", profile.username);
-    }
     setIsEditingUsername(!isEditingUsername);
   };
 
-  // Default avatars based on gender
   const defaultMaleAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
   const defaultFemaleAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135789.png";
   const defaultNeutralAvatar = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
@@ -58,7 +82,6 @@ function ProfilePage() {
   return (
     <div className="App">
       <h2 className="welcome-text-signup">My Profile</h2>
-
       <div className="signup-box">
         <form className="add-profile-form" onSubmit={handleUpdate}>
           {/* Profile Picture */}
@@ -75,7 +98,15 @@ function ProfilePage() {
               }}
             />
             <div style={{ marginTop: "8px" }}>
-              <label htmlFor="profilePicInput" style={{ fontSize: "14px", cursor: "pointer", color: "#1976d2", textDecoration: "underline" }}>
+              <label
+                htmlFor="profilePicInput"
+                style={{
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  color: "#1976d2",
+                  textDecoration: "underline",
+                }}
+              >
                 Choose a photo
               </label>
               <input
@@ -105,51 +136,47 @@ function ProfilePage() {
             )}
             <button
               type="button"
-              style={{
-                padding: "4px 8px",
-                fontSize: "14px",
-                minWidth: "1px",
-              }}
               className="login-button"
+              style={{ padding: "4px 8px", fontSize: "14px", minWidth: "1px" }}
               onClick={toggleUsernameEdit}
             >
               {isEditingUsername ? "Done" : "Edit"}
             </button>
           </div>
 
-          {/* Profile Details */}
+          {/* Other Details */}
           <input
             type="number"
             name="age"
             placeholder="Age"
-            value={profile.age}
+            value={profile.age || ""}
             onChange={handleChange}
           />
 
           <select
             name="gender"
-            value={profile.gender}
+            value={profile.gender || ""}
             onChange={handleChange}
             required
           >
             <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
           </select>
 
           <input
             type="text"
             name="role"
             placeholder="Role"
-            value={profile.role}
+            value={profile.role || ""}
             onChange={handleChange}
           />
 
           <textarea
             name="roleDescription"
             placeholder="Role Description"
-            value={profile.roleDescription}
+            value={profile.roleDescription || ""}
             onChange={handleChange}
           ></textarea>
 
@@ -157,7 +184,7 @@ function ProfilePage() {
             type="number"
             name="experience"
             placeholder="Experience (in years)"
-            value={profile.experience}
+            value={profile.experience || ""}
             onChange={handleChange}
           />
 
@@ -165,7 +192,7 @@ function ProfilePage() {
             type="text"
             name="location"
             placeholder="Location"
-            value={profile.location}
+            value={profile.location || ""}
             onChange={handleChange}
           />
 

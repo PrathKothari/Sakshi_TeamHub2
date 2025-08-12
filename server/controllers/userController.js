@@ -73,9 +73,57 @@ const getProfileOfUser = (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 }
+
+const updateUserProfile = async (req, res) => {
+  try {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: 'No update data provided' });
+    }
+
+    const userId = req.user._id;
+    const { username, email, age, gender, role, roleDescription, location, experience } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // ✅ Check unique username if changed
+    if (username && username !== user.username) {
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Username already taken' });
+      }
+      user.username = username;
+    }
+
+    // ✅ Update only provided fields
+    if (email) user.email = email;
+    if (age) user.age = age;
+    if (role) user.role = role;
+    if (roleDescription) user.roleDescription = roleDescription;
+    if (location) user.location = location;
+    if (gender) user.gender = gender;
+    if (experience) user.experience = experience;
+
+    await user.save();
+
+    const userResponse = user.toObject();
+    delete userResponse.password;
+    
+    res.status(200).json({
+      message: 'User profile updated successfully',
+      user: userResponse
+    });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
 export { 
   userRegistration,
   userSignIn,
-  getProfileOfUser
+  getProfileOfUser,
+  updateUserProfile
 };
 
