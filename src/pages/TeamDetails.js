@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import ProfileCard from '../components/ProfileCard';
 import Modal from '../components/Modal';
 
@@ -10,8 +11,8 @@ const TeamDetails = () => {
   const { team } = location.state || {};
   const [selectedProfile, setSelectedProfile] = useState(null);
   
-  // Simple state to simulate login status (you can toggle this for testing)
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Use real authentication context instead of simulation
+  const { isLoggedIn, currentUser } = useContext(AuthContext);
 
   // Debug logging
   console.log('TeamDetails rendered, isLoggedIn:', isLoggedIn);
@@ -32,19 +33,14 @@ const TeamDetails = () => {
     navigate('/');
   };
 
-  // Toggle function for testing purposes
-  const toggleLoginStatus = () => {
-    setIsLoggedIn(!isLoggedIn);
-  };
-
   const handleJoinTeam = () => {
     // Implement join team logic here
     navigate('/join-team');
   };
 
   const handleCreateTeam = () => {
-    // Implement create team logic here
-    alert('Create team functionality to be implemented');
+    // Navigate to create team page
+    navigate('/create-team');
   };
 
   const handleLoginClick = () => {
@@ -68,14 +64,12 @@ const TeamDetails = () => {
           </p>
           {currentTeam && (
             <div className="team-stats">
-              <span className="member-count-large">{currentTeam.members.length} Team Members</span>
+              <span className="member-count-large">
+                {currentTeam.members ? currentTeam.members.length : currentTeam.membersCount || 0} Team Members
+              </span>
             </div>
           )}
         </div>
-        {/* Testing toggle button - remove this in production */}
-        <button className="toggle-login-button" onClick={toggleLoginStatus}>
-          {isLoggedIn ? 'Simulate Logout' : 'Simulate Login'}
-        </button>
       </div>
 
       {/* Conditional rendering based on authentication status */}
@@ -112,13 +106,13 @@ const TeamDetails = () => {
         </div>
       )}
 
-      {/* Only show team members if user is logged in and team data exists */}
-      {isLoggedIn && currentTeam && (
+      {/* Only show team members if team data exists and has members */}
+      {currentTeam && currentTeam.members && currentTeam.members.length > 0 && (
         <div className="team-members-section">
           <div className="team-members-grid">
             {currentTeam.members.map((member, index) => (
               <ProfileCard 
-                key={index} 
+                key={member._id || index} 
                 profile={member} 
                 onClick={handleProfileClick}
               />

@@ -267,6 +267,55 @@ body {
   font-size: 1.1rem;
 }
 
+/* Error teams styling */
+.error-teams {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #ff6b6b;
+}
+
+.error-teams p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* No teams styling */
+.no-teams {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #ccc;
+}
+
+.no-teams p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.create-team-btn {
+  background: linear-gradient(135deg, #ff4081, #ff6ec7);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-team-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 64, 129, 0.3);
+}
+
+/* Team creator info */
+.team-creator {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin: 0.5rem 0;
+  font-style: italic;
+}
+
 .teams-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -311,8 +360,10 @@ body {
 .team-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .team-card-header h3 {
@@ -320,14 +371,23 @@ body {
   color: #fff;
   font-size: 1.4rem;
   font-weight: 600;
+  flex: 1;
+  min-width: 200px;
 }
 
-.member-count {
+.team-card-header .member-count {
   background: rgba(255, 64, 129, 0.2);
   color: #ff4081;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.team-card-header .status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
   font-weight: 500;
 }
 

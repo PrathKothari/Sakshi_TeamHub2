@@ -1,77 +1,43 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import userApi from '../apis/services/userApi';
+import teamApi from '../apis/services/teamApi';
 
 const Home = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useContext(AuthContext);
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Mock teams data 
-  const mockTeams = [
-    {
-      id: 1,
-      name: "Frontend Development Team",
-      description: "Responsible for creating stunning user interfaces and user experiences using React, Vue, and modern CSS frameworks.",
-      members: [
-        {
-          name: "Sharadhi",
-          image: "/assets/sakshi.jpg",
-          role: "Senior Frontend Developer",
-          bio: "Passionate about UI/UX and React. Loves creating intuitive user experiences."
-        },
-        {
-          name: "Pratham",
-          image: "/assets/sakshi.jpg",
-          role: "Frontend Developer",
-          bio: "Specializes in Vue.js and modern CSS. Enjoys building responsive web applications."
-        },
-        {
-          name: "Monisha",
-          image: "/assets/sakshi.jpg",
-          role: "Frontend Developer",
-          bio: "Specializes in Vue.js and modern CSS. Enjoys building responsive web applications."
-        }
-      ]
-    },
-    {
-      id: 2,
-      name: "Backend Development Team",
-      description: "Building robust server-side applications and APIs using Node.js, Python, and cloud technologies.",
-      members: [
-        {
-          name: "Sakshi",
-          image: "/assets/sakshi.jpg",
-          role: "Lead Backend Developer",
-          bio: "Expert in Node.js and microservices architecture. Passionate about scalable systems."
-        },
-        {
-          name: "Shivkumar",
-          image: "/assets/sakshi.jpg",
-          role: "DevOps Engineer",
-          bio: "Manages cloud infrastructure and CI/CD pipelines. AWS and Docker specialist."
-        }
-      ]
-    }
-  ];
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchTeams = async () => {
       setLoading(true);
+      setError('');
       try {
-        // Try to fetch teams from backend first
-        // const response = await teamsApi.getAllTeams();
-        // setTeams(response.data);
-
-        // For now, use mock data
-        setTeams(mockTeams);
-        setLoading(false);
+        // Fetch teams from backend
+        const response = await teamApi.listTeams();
+        console.log('Teams fetched:', response.data);
+        
+        // Transform the data to match the expected format
+        const transformedTeams = (response.data.teams || []).map(team => ({
+          id: team._id,
+          name: team.name,
+          description: team.description,
+          members: team.members || [],
+          membersCount: team.membersCount || team.members?.length || 0,
+          maxMembers: team.maxMembers,
+          createdBy: team.createdBy,
+          createdAt: team.createdAt,
+          isFull: team.isFull
+        }));
+        
+        setTeams(transformedTeams);
       } catch (error) {
         console.error('Error fetching teams:', error);
-        // Fallback to mock data if API fails
-        setTeams(mockTeams);
+        setError('Failed to load teams. Please try again later.');
+        setTeams([]); // Set empty array on error
+      } finally {
         setLoading(false);
       }
     };
@@ -175,29 +141,38 @@ const Home = () => {
               <div className="loading-spinner"></div>
               <p>Loading amazing teams...</p>
             </div>
+          ) : error ? (
+            <div className="error-teams">
+              <p>{error}</p>
+            </div>
+          ) : teams.length === 0 ? (
+            <div className="no-teams">
+              <p>No teams available yet. Be the first to create one!</p>
+              {isLoggedIn && (
+                <button className="create-team-btn" onClick={handleCreateTeam}>
+                  Create First Team
+                </button>
+              )}
+            </div>
           ) : (
             <div className="teams-grid">
               {teams.map((team) => (
                 <div key={team.id} className="team-showcase-card" onClick={() => handleTeamClick(team)}>
                   <div className="team-card-header">
                     <h3>{team.name}</h3>
-                    <span className="member-count">{team.members.length} members</span>
+                    <span className="member-count">
+                      {team.membersCount}/{team.maxMembers} members
+                    </span>
+                    <span className={`status-badge ${team.isFull ? 'full' : 'open'}`}>
+                      {team.isFull ? 'Full' : 'Open'}
+                    </span>
                   </div>
                   <p className="team-description">{team.description}</p>
-                  <div className="team-members-preview">
-                    {team.members.slice(0, 3).map((member, index) => (
-                      <img
-                        key={index}
-                        src={member.image}
-                        alt={member.name}
-                        className="member-avatar"
-                        title={member.name}
-                      />
-                    ))}
-                    {team.members.length > 3 && (
-                      <div className="more-members">+{team.members.length - 3}</div>
-                    )}
-                  </div>
+                  {team.createdBy && (
+                    <p className="team-creator">
+                      Created by: {team.createdBy.username || team.createdBy.email}
+                    </p>
+                  )}
                   <div className="team-card-footer">
                     <span className="view-team">View Team →</span>
                   </div>
