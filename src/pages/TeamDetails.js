@@ -17,7 +17,8 @@ const TeamDetails = () => {
   // Debug logging
   console.log('TeamDetails rendered, isLoggedIn:', isLoggedIn);
   console.log('Team data:', team);
-
+  console.log("members"+ team.members );
+  
   // Use the passed team data or show a generic page
   const currentTeam = team;
 
@@ -33,23 +34,23 @@ const TeamDetails = () => {
     navigate('/');
   };
 
-  const handleJoinTeam = () => {
-    // Implement join team logic here
-    navigate('/join-team');
-  };
+  // const handleJoinTeam = () => {
+  //   // Implement join team logic here
+  //   navigate('/join-team');
+  // };
 
-  const handleCreateTeam = () => {
-    // Navigate to create team page
-    navigate('/create-team');
-  };
+  // const handleCreateTeam = () => {
+  //   // Navigate to create team page
+  //   navigate('/create-team');
+  // };
 
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
+  // const handleLoginClick = () => {
+  //   navigate('/login');
+  // };
 
-  const handleSignupClick = () => {
-    navigate('/signup');
-  };
+  // const handleSignupClick = () => {
+  //   navigate('/signup');
+  // };
 
   return (
     <div className="home">
@@ -73,7 +74,7 @@ const TeamDetails = () => {
       </div>
 
       {/* Conditional rendering based on authentication status */}
-      {isLoggedIn ? (
+      {/* {isLoggedIn ? (
         <div className="team-actions-section">
           <div className="team-actions-container">
             <h3 className="team-actions-title">What would you like to do?</h3>
@@ -104,19 +105,22 @@ const TeamDetails = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Only show team members if team data exists and has members */}
       {currentTeam && currentTeam.members && currentTeam.members.length > 0 && (
         <div className="team-members-section">
           <div className="team-members-grid">
-            {currentTeam.members.map((member, index) => (
-              <ProfileCard 
-                key={member._id || index} 
-                profile={member} 
-                onClick={handleProfileClick}
-              />
-            ))}
+            {currentTeam.members.map((member, index) => {
+              const isAdmin = member.email === currentTeam.createdBy?.email; // check admin
+              return (
+                <ProfileCard 
+                  key={member._id || index} 
+                  profile={{ ...member, isAdmin }} // pass admin info
+                  onClick={handleProfileClick}
+                />
+              );
+            })}
           </div>
         </div>
       )}
