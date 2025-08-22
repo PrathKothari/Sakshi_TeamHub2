@@ -862,14 +862,15 @@ body {
 /* Team Details Page Styles */
 .team-details-header {
   margin-bottom: 30px;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* keep team-info centered */
   position: relative;
 }
 
-.team-details-header .back-button {
-  position: absolute;
-  left: 0;
-  top: 0;
+.back-button-container {
+  text-align: center;   /* center the button */
+  margin: 20px 0;       /* space above & below */
 }
 
 .back-button {
@@ -890,6 +891,9 @@ body {
 .back-button:hover {
   background: #e91e63;
 }
+
+
+
 
 /* Toggle button for testing (remove in production) */
 .toggle-login-button {
@@ -1450,6 +1454,7 @@ body {
   font-size: 0.95rem;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.2s;
+  margin: 6px; 
 }
 
 .join-btn:hover:enabled {
@@ -1817,7 +1822,6 @@ input[type="file"] {
   display: inline-block;
   padding: 4px 12px;
   border-radius: 20px;
-  font-size: 0.8rem;
   font-weight: 500;
   text-transform: uppercase;
 }
