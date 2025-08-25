@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "../App.css";
 import userApi from "../apis/services/userApi";
+import { AuthContext } from "../context/AuthContext";
 
 function ProfilePage() {
+  const { updateUser } = useContext(AuthContext);
   const [profile, setProfile] = useState({
     username: "",
     email: "",
@@ -42,11 +44,19 @@ function ProfilePage() {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setProfile({ ...profile, profilePicture: URL.createObjectURL(file) });
-      // TODO: Upload to backend with FormData
+    if (!file) return;
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      const { data } = await userApi.uploadAvatar(formData);
+      if (data?.user) {
+        setProfile((prev) => ({ ...prev, ...data.user }));
+        updateUser(data.user);
+      }
+    } catch (err) {
+      console.error('Upload failed', err);
     }
   };
 
@@ -55,9 +65,12 @@ function ProfilePage() {
     setMessage("");
 
     try {
-      const { profilePicture, ...updateData } = profile; // exclude picture for now
+      const { profilePicture, ...updateData } = profile; // picture is updated via upload
       const response = await userApi.updateUserProfile(updateData);
       setMessage(response.data.message);
+      if (response?.data?.user) {
+        updateUser(response.data.user);
+      }
     } catch (error) {
       setMessage(error.response?.data?.message || "Failed to update profile");
     }
@@ -79,6 +92,13 @@ function ProfilePage() {
     return defaultNeutralAvatar;
   };
 
+  const buildImageSrc = (src) => {
+    if (!src) return getDefaultAvatar();
+    if (typeof src !== 'string') return getDefaultAvatar();
+    if (src.startsWith('http')) return src;
+    return `http://localhost:5000${src.startsWith('/') ? src : `/${src}`}`;
+  };
+
   return (
     <div className="App">
       <h2 className="welcome-text-signup">My Profile</h2>
@@ -87,7 +107,7 @@ function ProfilePage() {
           {/* Profile Picture */}
           <div style={{ textAlign: "center", marginBottom: "15px" }}>
             <img
-              src={profile.profilePicture || getDefaultAvatar()}
+              src={buildImageSrc(profile.profilePicture)}
               alt="Profile"
               style={{
                 width: "100px",

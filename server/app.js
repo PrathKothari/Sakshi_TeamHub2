@@ -4,6 +4,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './utiles/db.js';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 import userRouter from './routers/userRouter.js';
 import teamRouter from './routers/teamRouter.js';
@@ -24,6 +27,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 const PORT = process.env.PORT || 5000;
+
+// Static serving for uploaded images
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/users', userRouter);
 app.use('/api/teams', teamRouter);

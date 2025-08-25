@@ -7,5 +7,6 @@ const userApi = {
     signOutUser: () => axiosInstance.get(`${User}/signout`),
     getUserProfile: () => axiosInstance.get(`${User}/profile`),
     updateUserProfile: (updateData) => axiosInstance.patch(`${User}/update`,updateData),
+    uploadAvatar: (formData) => axiosInstance.post(`${User}/upload-avatar`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 }
 export default userApi;

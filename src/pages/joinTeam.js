@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import teamApi from "../apis/services/teamApi";
+import Modal from "../components/Modal";
 
 const JoinTeam = () => {
   const [teams, setTeams] = useState([]);
@@ -11,6 +12,10 @@ const JoinTeam = () => {
   const [joinMessage, setJoinMessage] = useState("");
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showOnlyOpen, setShowOnlyOpen] = useState(false);
+  const [expandedTeamId, setExpandedTeamId] = useState(null);
+  const [membersModal, setMembersModal] = useState({ open: false, team: null });
+  const [selectedMember, setSelectedMember] = useState(null);
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -26,6 +31,7 @@ const JoinTeam = () => {
           maxMembers: t.maxMembers,
           status: (t.membersCount ?? 0) < t.maxMembers ? "Open" : "Full",
           createdBy: t.createdBy,
+          membersList: t.members || [],
         }));
         setTeams(mapped);
       } catch (err) {
@@ -77,9 +83,9 @@ const JoinTeam = () => {
     setError("");
   };
 
-  const filteredTeams = teams.filter((team) =>
-    team.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredTeams = teams
+    .filter((team) => team.name.toLowerCase().includes(search.toLowerCase()))
+    .filter((team) => (showOnlyOpen ? team.status === "Open" : true));
 
   return (
     <div className="join-team-page">
@@ -94,6 +100,15 @@ const JoinTeam = () => {
           onChange={(e) => setSearch(e.target.value)}
           className="search-bar"
         />
+        <div style={{ marginTop: 12 }}>
+          <button
+            className="join-btn"
+            onClick={() => setShowOnlyOpen((v) => !v)}
+            style={{ padding: '8px 12px' }}
+          >
+            {showOnlyOpen ? 'Show All Groups' : 'View Open Groups'}
+          </button>
+        </div>
       </div>
 
       {/* Team Cards */}
@@ -124,6 +139,14 @@ const JoinTeam = () => {
               >
                 {team.status}
               </span>
+              <div style={{ marginTop: 8 }}>
+                <button
+                  className="join-btn"
+                  onClick={() => setMembersModal({ open: true, team })}
+                >
+                  View Members
+                </button>
+              </div>
               <button
                 className="join-btn"
                 disabled={team.status !== "Open"}
@@ -162,6 +185,40 @@ const JoinTeam = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Members View Modal */}
+      {membersModal.open && (
+        <div className="modal-overlay" onClick={() => setMembersModal({ open: false, team: null })}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Members of {membersModal.team?.name}</h3>
+            <div className="team-members-grid" style={{ marginTop: 12 }}>
+              {(membersModal.team?.membersList || []).map((member, idx) => {
+                const src = member?.profilePicture;
+                const image = src
+                  ? (src.startsWith('http') ? src : `http://localhost:5000${src.startsWith('/') ? src : `/${src}`}`)
+                  : 'https://cdn.vectorstock.com/i/1000v/92/16/default-profile-picture-avatar-user-icon-vector-46389216.jpg';
+                return (
+                  <div key={member?._id || idx} className="card" style={{ width: 180, cursor: 'pointer' }} onClick={() => setSelectedMember(member)}>
+                    <img src={image} alt={member?.username || 'User'} className="profile-img" />
+                    <h3>{member?.username || 'User'}</h3>
+                    {member?.email && <p>{member.email}</p>}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="modal-actions">
+              <button onClick={() => setMembersModal({ open: false, team: null })} className="cancel-btn">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Individual Member Profile Modal */}
+      {selectedMember && (
+        <Modal profile={selectedMember} onClose={() => setSelectedMember(null)} />
       )}
     </div>
   );

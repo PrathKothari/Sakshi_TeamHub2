@@ -37,7 +37,7 @@ export const listTeams = async (_req, res) => {
   try {
     const teams = await Team.find()
       .populate('createdBy', 'username email profilePicture')
-      .populate('members', 'username email profilePicture')
+      .populate('members', 'username email profilePicture role experience location age gender')
       .sort({ createdAt: -1 });
     
     // Ensure createdBy is properly populated

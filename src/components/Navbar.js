@@ -41,6 +41,13 @@ const Navbar = () => {
     navigate('/updateprofile');
   };
 
+  const buildImageSrc = (src) => {
+    if (!src) return null;
+    if (typeof src !== 'string') return null;
+    if (src.startsWith('http')) return src;
+    return `http://localhost:5000${src.startsWith('/') ? src : `/${src}`}`;
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-brand">
@@ -65,9 +72,9 @@ const Navbar = () => {
               aria-label="User profile menu"
             >
               <div className="profile-avatar">
-                {currentUser?.profilePicture ? (
+                {buildImageSrc(currentUser?.profilePicture) ? (
                   <img 
-                    src={currentUser.profilePicture} 
+                    src={buildImageSrc(currentUser.profilePicture)} 
                     alt="Profile" 
                     className="avatar-img"
                   />

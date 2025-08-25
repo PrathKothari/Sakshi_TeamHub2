@@ -1,5 +1,6 @@
 import User from '../models/userModel.js';
 import { createJWTTOkenUser } from '../utiles/createJWTToken.js';
+import path from 'path';
 
 const userRegistration = async (req, res) => {
   try {
@@ -145,5 +146,29 @@ export {
   getProfileOfUser,
   updateUserProfile,
   forgetPassword,
+};
+
+// New: handle avatar upload
+export const uploadProfilePicture = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const filePath = `/uploads/${req.file.filename}`;
+    user.profilePicture = filePath;
+    await user.save();
+
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    return res.status(200).json({ message: 'Profile picture updated', user: userResponse });
+  } catch (error) {
+    console.error('Upload avatar error:', error);
+    return res.status(500).json({ message: 'Server error', error: error.message });
+  }
 };
 
