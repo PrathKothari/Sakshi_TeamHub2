@@ -13,6 +13,8 @@ import CreateTeam from './pages/create_team';
 import ProfilePage from './pages/profileUpdate'; // ✅ Import ProfilePage
 import MyTeams from './pages/MyTeams';
 import Events from './pages/Events';
+import CreateEvent from './pages/CreateEvent';
+import JoinEvent from './pages/JoinEvent';
 
 function LandingPage() {
   return (
@@ -43,6 +45,8 @@ function App() {
                 <Route path="/updateprofile" element={<ProfilePage />} />
                 <Route path="/my-teams" element={<MyTeams />} />
                 <Route path="/events" element={<Events />} />
+                <Route path="/create-event" element={<CreateEvent />} />
+                <Route path="/join-event" element={<JoinEvent />} />
               </Routes>
             </main>
             <Footer />  {/* ✅ Footer is outside Routes so it shows on all pages */}
