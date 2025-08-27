@@ -92,7 +92,7 @@ const Events = () => {
                 <li>Track event success and feedback</li>
               </ul>
               <button 
-                className="action-button create-button"
+                className="action-button join-button"
                 onClick={handleCreateEvent}
               >
                 Create an Event

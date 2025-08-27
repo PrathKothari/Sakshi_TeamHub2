@@ -15,6 +15,7 @@ import MyTeams from './pages/MyTeams';
 import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
 import JoinEvent from './pages/JoinEvent';
+import Payment from './pages/Payment';
 
 function LandingPage() {
   return (
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/events" element={<Events />} />
                 <Route path="/create-event" element={<CreateEvent />} />
                 <Route path="/join-event" element={<JoinEvent />} />
+                <Route path="/payment" element={<Payment />} />
               </Routes>
             </main>
             <Footer />  {/* ✅ Footer is outside Routes so it shows on all pages */}

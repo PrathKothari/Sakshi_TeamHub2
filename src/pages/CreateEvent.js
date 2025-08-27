@@ -1,8 +1,11 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './CreateEvent.css';
 
 const CreateEvent = () => {
-   useEffect(() => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
         window.scrollTo(0, 0);
       }, []);
   const [formData, setFormData] = useState({
@@ -138,9 +141,11 @@ const CreateEvent = () => {
         }
       });
       
-      // API call would go here
-      console.log('Event data:', formData);
-      alert('Event created successfully!');
+      // Store form data in sessionStorage to pass to payment page
+      sessionStorage.setItem('eventFormData', JSON.stringify(formData));
+      
+      // Navigate to payment page
+      navigate('/payment', { state: { eventData: formData } });
       
     } catch (error) {
       console.error('Error creating event:', error);
