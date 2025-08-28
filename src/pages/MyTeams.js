@@ -26,9 +26,7 @@ const MyTeams = () => {
       setLoading(true);
       const { data } = await teamApi.listTeams();
       
-      // Filter teams where current user is the creator
       const userTeams = (data.teams || []).filter(team => {
-        // Convert both IDs to strings for comparison
         const teamCreatorId = team.createdBy?._id?.toString();
         const currentUserId = currentUser._id?.toString();
         return teamCreatorId && currentUserId && teamCreatorId === currentUserId;
@@ -52,8 +50,11 @@ const MyTeams = () => {
   };
 
   const handleRequestUpdate = () => {
-    // Refresh teams list when join requests are updated
     fetchMyTeams();
+  };
+
+  const handleTeamChat = (teamId) => {
+    navigate(`/team-chat/${teamId}`);
   };
 
   if (authLoading) {
@@ -124,7 +125,7 @@ const MyTeams = () => {
               <div className="team-header">
                 <h3>{team.name}</h3>
                 <span className={`status-badge ${team.isFull ? 'full' : 'open'}`}>
-                  {team.isFull ? 'Full' : 'Open'}
+                  {team.isFull ? 'Full' : 'Full'}
                 </span>
               </div>
               
@@ -145,6 +146,13 @@ const MyTeams = () => {
                   onClick={() => handleTeamSelect(team)}
                 >
                   Manage Team
+                </button>
+                <button
+                  className="manage-team-btn"
+                  onClick={() => handleTeamChat(team._id)}
+                  style={{ marginLeft: '10px' }}
+                >
+                  Team Chat
                 </button>
               </div>
             </div>
