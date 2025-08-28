@@ -17,10 +17,10 @@ const TeamDetails = () => {
   // Debug logging
   console.log('TeamDetails rendered, isLoggedIn:', isLoggedIn);
   console.log('Team data:', team);
-  console.log("members"+ team.members );
+  console.log('members:', team?.members ? team.members.length : 0);
   
   // Use the passed team data or show a generic page
-  const currentTeam = team;
+  const currentTeam = team || null;
 
   const handleProfileClick = (profile) => {
     setSelectedProfile(profile);
