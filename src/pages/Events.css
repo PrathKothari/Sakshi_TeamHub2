@@ -228,31 +228,31 @@
 }
 
 .action-button {
-  padding: 15px 30px;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  padding: 0.875rem 2rem;
+  border-radius: 10px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 10px;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  margin-top: 2rem;
+}
+
+.join-button,
+.create-button {
   background: linear-gradient(135deg, #ff4081, #e91e63);
-  color: #fff;
+  color: white;
   box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
 }
 
-.action-button:hover {
-  transform: translateY(-3px);
+.join-button:hover {
+  transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(255, 64, 129, 0.4);
-  background: linear-gradient(135deg, #e91e63, #c2185b);
-}
-
-.create-button {
-  background: linear-gradient(135deg, #ff6ec7, #ff4081);
-}
-
-.create-button:hover {
-  background: linear-gradient(135deg, #e91e63, #c2185b);
 }
 
 .events-stats {

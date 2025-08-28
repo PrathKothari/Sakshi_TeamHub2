@@ -92,7 +92,7 @@ const Events = () => {
                 <li>Track event success and feedback</li>
               </ul>
               <button 
-                className="action-button create-button"
+                className="action-button join-button"
                 onClick={handleCreateEvent}
               >
                 Create an Event
@@ -101,20 +101,6 @@ const Events = () => {
           </div>
         </div>
 
-        <div className="events-stats">
-          <div className="stat-item">
-            <div className="stat-number">50+</div>
-            <div className="stat-label">Events Created</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">200+</div>
-            <div className="stat-label">Participants</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">5+</div>
-            <div className="stat-label">Active Teams</div>
-          </div>
-        </div>
       </div>
 
     </div>
