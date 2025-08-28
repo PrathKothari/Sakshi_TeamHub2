@@ -11,6 +11,7 @@ import fs from 'fs';
 import userRouter from './routers/userRouter.js';
 import teamRouter from './routers/teamRouter.js';
 import joinRequestRouter from './routers/joinRequestRouter.js';
+import messageRouter from './routers/messageRouter.js'; // added: chat message routes
 dotenv.config();
 
 const app = express();
@@ -40,6 +41,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/users', userRouter);
 app.use('/api/teams', teamRouter);
 app.use('/api/join-requests', joinRequestRouter);
+app.use('/api/messages', messageRouter); // added: mount chat routes
 app.get('/', (req, res) => {
   res.send('Welcome to TeamHub Backend!');
 });
