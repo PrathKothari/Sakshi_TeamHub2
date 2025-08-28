@@ -17,6 +17,7 @@ import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
 import JoinEvent from './pages/JoinEvent';
 import Payment from './pages/Payment';
+import TeamChat from './components/TeamChat'; 
 
 function LandingPage() {
   return (
@@ -28,8 +29,6 @@ function LandingPage() {
   );
 }
 
-
-import TeamChat from './components/TeamChat'; // Import TeamChat
 
 function App() {
   return (

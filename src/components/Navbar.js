@@ -100,7 +100,7 @@ const Navbar = () => {
                   onClick={handleProfileClick}
                 >
                   <span className="dropdown-icon">👤</span>
-                  Profile Settings
+                Dashboard
                 </button>
                 <button 
                   className="dropdown-item logout-item"
