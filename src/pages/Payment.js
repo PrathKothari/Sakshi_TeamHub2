@@ -32,6 +32,7 @@ const Payment = () => {
     return basePrice + additionalFeatures;
   };
 
+
   // ✅ PayPal success handler
   const handlePaymentSuccess = async (order) => {
   // alert("✅ PayPal Payment Successful! ID: " + order.id);

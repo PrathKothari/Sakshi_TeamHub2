@@ -13,7 +13,6 @@ import CreateTeam from './pages/create_team';
 import ProfilePage from './pages/profileUpdate';
 import MyTeams from './pages/MyTeams';
 import Events from './pages/Events';
-
 import CreateEvent from './pages/CreateEvent';
 import JoinEvent from './pages/JoinEvent';
 import Payment from './pages/Payment';
@@ -48,11 +47,10 @@ function App() {
                 <Route path="/updateprofile" element={<ProfilePage />} />
                 <Route path="/my-teams" element={<MyTeams />} />
                 <Route path="/events" element={<Events />} />
-
                 <Route path="/create-event" element={<CreateEvent />} />
                 <Route path="/join-event" element={<JoinEvent />} />
                 <Route path="/payment" element={<Payment />} />
-
+                <Route path="/join-event/:eventId" element={<JoinEvent />} />
                 <Route path="/team-chat/:teamId" element={<TeamChat />} /> {/* Add TeamChat route */}
 
               </Routes>
