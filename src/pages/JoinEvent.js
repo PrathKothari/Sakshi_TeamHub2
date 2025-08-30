@@ -1,15 +1,38 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import "./JoinEvent.css";
 
 const JoinEvent = () => {
+  const { eventId } = useParams();
   const [step, setStep] = useState(1);
+  const [eventData, setEventData] = useState(null);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    // Fetch event data based on eventId
+    fetchEventData();
+  }, [eventId]);
 
-  const maxTeamSize = 4; // can be dynamic (from event data)
+  const fetchEventData = async () => {
+    try {
+      const response = await fetch(`/api/events/${eventId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setEventData(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch event data:", error);
+      // Set default event data if API fails
+      setEventData({
+        title: "Hackathon 2025",
+        maxTeamSize: 4,
+        deadline: "30th Aug",
+      });
+    }
+  };
+
+  const maxTeamSize = eventData?.maxTeamSize || 4;
 
   const [formData, setFormData] = useState({
     teamName: "",
@@ -60,9 +83,10 @@ const JoinEvent = () => {
         <h2 className="join-title">Join Event</h2>
 
         <div className="event-summary">
-          <h3>Hackathon 2025</h3>
+          <h3>{eventData?.title || "Loading..."}</h3>
           <p>
-            Deadline: 30th Aug | Mode: Online | Max Team Size: {maxTeamSize}
+            Deadline: {eventData?.deadline || "TBD"} | Mode:{" "}
+            {eventData?.mode || "Online"} | Max Team Size: {maxTeamSize}
           </p>
         </div>
 
@@ -109,7 +133,11 @@ const JoinEvent = () => {
                 value={formData.institution}
                 onChange={handleChange}
               />
-              <button type="button" onClick={nextStep} className="form-btn primary">
+              <button
+                type="button"
+                onClick={nextStep}
+                className="form-btn primary"
+              >
                 Next →
               </button>
             </div>

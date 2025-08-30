@@ -113,50 +113,25 @@ const Payment = () => {
 
   const handlePayment = async (e) => {
     e.preventDefault();
-    
+
     if (!validatePayment()) return;
-    
+
     setIsProcessing(true);
-    
+
     try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Create event after successful payment
-      const response = await fetch('/api/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...eventData,
-          paymentMethod,
-          paymentData: paymentMethod === 'card' ? {
-            last4: paymentData.cardNumber.slice(-4),
-            cardholderName: paymentData.cardholderName
-          } : paymentMethod === 'upi' ? {
-            upiId: paymentData.upiId
-          } : {
-            bank: paymentData.netBankingBank
-          }
-        })
+      // Simulate payment processing (for testing, always succeed)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Simulate successful event creation (skip actual API call)
+      sessionStorage.removeItem('eventFormData');
+
+      // Navigate to success page or events list
+      navigate('/events', {
+        state: {
+          message: 'Event created successfully!',
+          type: 'success'
+        }
       });
-      
-      if (response.ok) {
-        // Clear stored data
-        sessionStorage.removeItem('eventFormData');
-        
-        // Navigate to success page or events list
-        navigate('/events', { 
-          state: { 
-            message: 'Event created successfully!',
-            type: 'success'
-          }
-        });
-      } else {
-        throw new Error('Failed to create event');
-      }
-      
     } catch (error) {
       console.error('Payment error:', error);
       alert('Payment failed. Please try again.');
