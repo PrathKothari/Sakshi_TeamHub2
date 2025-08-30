@@ -23,17 +23,25 @@ const TeamChat = () => {
 
   const emojis = ['😊', '😂', '❤️', '👍', '🔥', '🎉', '😢', '😠', '🤔', '😎', '😮', '👏'];
 
+  // load team details and messages (changed)
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
         setLoading(true);
         const { data } = await teamApi.getTeamDetails(teamId);
         setTeam(data.team);
-        // Mock fetching messages and online status
-        const fetchedMessages = [
-          { id: 1, text: 'Glad to be here!', sender: currentUser, timestamp: new Date().toISOString() },
-        ];
-        setMessages(fetchedMessages);
+        // Load messages from server (added)
+        const msgsRes = await teamApi.listMessages(teamId);
+        const fetched = (msgsRes.data.messages || []).map(m => ({
+          id: m._id,
+          text: m.text,
+          sender: m.sender,
+          timestamp: m.createdAt,
+          fileUrl: m.fileUrl,
+          fileName: m.fileName,
+          fileType: m.fileType,
+        }));
+        setMessages(fetched);
         setOnlineMembers([currentUser._id]);
       } catch (err) {
         setError('Failed to load team data.');
@@ -49,18 +57,28 @@ const TeamChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = (e) => {
+  // send text message to server (changed)
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (newMessage.trim()) {
+    if (!newMessage.trim()) return;
+    try {
+      const payload = { text: newMessage };
+      const { data } = await teamApi.sendMessage(teamId, payload);
+      const m = data.message;
       const message = {
-        id: Date.now(),
-        text: newMessage,
-        sender: currentUser,
-        timestamp: new Date().toISOString(),
+        id: m._id,
+        text: m.text,
+        sender: m.sender,
+        timestamp: m.createdAt,
+        fileUrl: m.fileUrl,
+        fileName: m.fileName,
+        fileType: m.fileType,
       };
       setMessages((prevMessages) => [...prevMessages, message]);
       setNewMessage('');
       setShowEmojis(false);
+    } catch (_err) {
+      // noop for now
     }
   };
 
@@ -82,18 +100,30 @@ const TeamChat = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
+  // upload a file message to server (added)
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Handle file upload logic here
-      console.log('Selected file:', file.name);
-      const message = {
-        id: Date.now(),
-        text: `File attached: ${file.name}`,
-        sender: currentUser,
-        timestamp: new Date().toISOString(),
-      };
-      setMessages((prevMessages) => [...prevMessages, message]);
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await teamApi.sendMessage(teamId, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        const m = data.message;
+        const message = {
+          id: m._id,
+          text: m.text,
+          sender: m.sender,
+          timestamp: m.createdAt,
+          fileUrl: m.fileUrl,
+          fileName: m.fileName,
+          fileType: m.fileType,
+        };
+        setMessages((prevMessages) => [...prevMessages, message]);
+      } catch (_err) {
+        // noop for now
+      }
     }
   };
 
@@ -136,7 +166,20 @@ const TeamChat = () => {
                 <img src={msg.sender.profilePicture || 'default-avatar.png'} alt={msg.sender.username} className="message-avatar" />
                 <div className="message-content">
                   <div className="message-sender">{msg.sender.username}</div>
-                  <p className="message-text">{msg.text}</p>
+                  {msg.text && <p className="message-text">{msg.text}</p>}
+                  {msg.fileUrl && (
+                    <div className="message-file">
+                      {msg.fileType && msg.fileType.startsWith('image/') ? (
+                        <a href={msg.fileUrl} target="_blank" rel="noreferrer">
+                          <img src={msg.fileUrl} alt={msg.fileName || 'attachment'} style={{ maxWidth: '240px', borderRadius: '8px' }} />
+                        </a>
+                      ) : (
+                        <a href={msg.fileUrl} target="_blank" rel="noreferrer" style={{ color: '#ff4081' }}>
+                          {msg.fileName || 'Download file'}
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="message-actions">
                   <button onClick={() => handlePinMessage(msg)}>📌</button>
