@@ -13,7 +13,7 @@ import CreateTeam from './pages/create_team';
 import ProfilePage from './pages/profileUpdate';
 import MyTeams from './pages/MyTeams';
 import Events from './pages/Events';
-import TeamChat from './components/TeamChat';
+
 import CreateEvent from './pages/CreateEvent';
 import JoinEvent from './pages/JoinEvent';
 import Payment from './pages/Payment';
