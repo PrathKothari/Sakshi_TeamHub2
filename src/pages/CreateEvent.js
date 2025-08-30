@@ -116,44 +116,59 @@ const CreateEvent = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) return;
-    
-    setIsSubmitting(true);
-    
-    try {
-      const formDataToSubmit = new FormData();
-      
-      // Append all form data
-      Object.keys(formData).forEach(key => {
-        if (key === 'socialLinks') {
-          formDataToSubmit.append(key, JSON.stringify(formData[key]));
-        } else if (key === 'tags') {
-          formDataToSubmit.append(key, JSON.stringify(formData[key]));
-        } else if (key === 'eventLogo' || key === 'bannerImage') {
-          if (formData[key]) {
-            formDataToSubmit.append(key, formData[key]);
-          }
-        } else {
-          formDataToSubmit.append(key, formData[key]);
-        }
-      });
-      
-      // Store form data in sessionStorage to pass to payment page
-      sessionStorage.setItem('eventFormData', JSON.stringify(formData));
-      
-      // Navigate to payment page
-      navigate('/payment', { state: { eventData: formData } });
-      
-    } catch (error) {
-      console.error('Error creating event:', error);
-      alert('Error creating event. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!validateForm()) return;
+
+  setIsSubmitting(true);
+
+  try {
+    // Transform frontend formData → backend format
+    const formattedData = {
+      title: formData.eventName,
+      description: formData.description,
+      dates: {
+        registrationStarts: formData.registrationStart,
+        registrationEnds: formData.registrationEnd,
+        eventStart: formData.eventStart,
+        eventEnd: formData.eventEnd,
+      },
+      location: formData.mode === "offline" ? formData.venue : formData.platform,
+      category: formData.category,
+      tags: formData.tags,
+      participantRules: {
+        minTeamSize: formData.minTeamSize,
+        maxTeamSize: formData.maxTeamSize,
+        maxParticipants: formData.maxParticipants || null,
+        registrationFee: formData.registrationFee,
+        eligibilityCriteria: formData.eligibility,
+      },
+      eventLogistics: {
+        eventMode: formData.mode,
+        venueDetails: formData.venue,
+        contactInformation: formData.contact,
+      },
+      prizesAndRewards: {
+        prizes: "₹50,000 cash prize", // ⚡ later make dynamic field in form if needed
+        certificates: true, // ⚡ later add checkbox in form if needed
+      },
+    };
+
+    // Save structured data for payment page
+    sessionStorage.setItem("eventFormData", JSON.stringify(formattedData));
+
+    // Redirect to payment page with structured data
+    navigate("/payment", { state: { eventData: formattedData } });
+
+  } catch (error) {
+    console.error("Error preparing event:", error);
+    alert("Error preparing event. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <div className="create-event-container">

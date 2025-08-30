@@ -11,6 +11,8 @@ import fs from 'fs';
 import userRouter from './routers/userRouter.js';
 import teamRouter from './routers/teamRouter.js';
 import joinRequestRouter from './routers/joinRequestRouter.js';
+import eventRouter from './routers/eventRouter.js';
+
 dotenv.config();
 
 const app = express();
@@ -23,6 +25,7 @@ app.use(cors(
     credentials: true,
   }
 ));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -40,6 +43,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/users', userRouter);
 app.use('/api/teams', teamRouter);
 app.use('/api/join-requests', joinRequestRouter);
+app.use('/api/events', eventRouter);
+
+
 app.get('/', (req, res) => {
   res.send('Welcome to TeamHub Backend!');
 });

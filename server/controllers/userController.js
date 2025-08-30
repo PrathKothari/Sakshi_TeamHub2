@@ -140,15 +140,6 @@ const forgetPassword = async (req, res) => {
   }
 }
 
-export { 
-  userRegistration,
-  userSignIn,
-  getProfileOfUser,
-  updateUserProfile,
-  forgetPassword,
-};
-
-// New: handle avatar upload
 export const uploadProfilePicture = async (req, res) => {
   try {
     if (!req.file) {
@@ -171,4 +162,15 @@ export const uploadProfilePicture = async (req, res) => {
     return res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+export { 
+  userRegistration,
+  userSignIn,
+  getProfileOfUser,
+  updateUserProfile,
+  forgetPassword,
+};
+
+// New: handle avatar upload
+
 
