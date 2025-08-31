@@ -66,6 +66,33 @@ const getAllEvents = async (req, res) => {
   }
 };
 
+export const getEventById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('Getting event by ID:', id);
+    
+    const event = await Event.findById(id);
+    
+    if (!event) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Event not found' 
+      });
+    }
+    
+    res.json({
+      success: true,
+      event
+    });
+  } catch (error) {
+    console.error('Error fetching event by ID:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to fetch event',
+      error: error.message 
+    });
+  }
+};
 
 export  {
     createEvent,

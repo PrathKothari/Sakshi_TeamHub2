@@ -69,7 +69,7 @@
 .event-details h4 {
   color: #fff;
   font-size: 1.2rem;
-  margin-bottom: 1rem;
+  margin: 1rem;
 }
 
 .event-details p {
@@ -104,6 +104,16 @@
   border-radius: 16px;
   padding: 2rem;
   border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-form h3 {
+  color: #ff4081;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .payment-methods h3 {
@@ -184,13 +194,28 @@
   gap: 1rem;
 }
 
+/* Fixed payment actions styling - reverse order using CSS */
 .payment-actions {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column-reverse; /* This reverses the order */
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid #333;
+}
+
+.paypal-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60px;
+}
+
+.cancel-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 .btn-primary,
@@ -207,6 +232,7 @@
   align-items: center;
   justify-content: center;
   min-width: 140px;
+  max-width: 200px;
 }
 
 .btn-primary {
@@ -278,12 +304,13 @@
   }
   
   .payment-actions {
-    flex-direction: column;
+    flex-direction: column-reverse; /* Keep reverse order on mobile too */
   }
   
   .btn-primary,
   .btn-secondary {
     width: 100%;
+    max-width: none;
   }
 }
 

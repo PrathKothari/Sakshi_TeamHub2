@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import PayPal from "../components/PayPal";  // 👈 import here
+import PayPal from "../components/PayPal";
 import "./Payment.css";
 
 const Payment = () => {
@@ -18,6 +18,9 @@ const Payment = () => {
       navigate("/create-event");
       return;
     }
+    
+    // Debug: Log the eventData to see the structure
+    console.log("Event Data Structure:", data);
     setEventData(data);
   }, [location, navigate]);
 
@@ -32,40 +35,50 @@ const Payment = () => {
     return basePrice + additionalFeatures;
   };
 
-
-  // ✅ PayPal success handler
   const handlePaymentSuccess = async (order) => {
-  // alert("✅ PayPal Payment Successful! ID: " + order.id);
-
-  try {
-    const saveResponse = await fetch("http://localhost:5000/api/events", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include", // 👈 include cookies
-      body: JSON.stringify({
-        ...eventData,
-        payment: {
-          paymentGateway: "PayPal",
-          transactionStatus: "Success",
-        },
-      }),
-    });
-    console.log("Save Event Response:", saveResponse);
-    
-    if (saveResponse.ok) {
-      sessionStorage.removeItem("eventFormData");
-      navigate("/events", {
-        state: { message: "🎉 Event created successfully!", type: "success" },
+    try {
+      const saveResponse = await fetch("http://localhost:5000/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          ...eventData,
+          payment: {
+            paymentGateway: "PayPal",
+            transactionStatus: "Success",
+          },
+        }),
       });
-    } else {
-      const err = await saveResponse.json();
-      alert("❌ Event creation failed after PayPal payment.\n" + err.message);
+      console.log("Save Event Response:", saveResponse);
+      
+      if (saveResponse.ok) {
+        sessionStorage.removeItem("eventFormData");
+        navigate("/events", {
+          state: { message: "🎉 Event created successfully!", type: "success" },
+        });
+      } else {
+        const err = await saveResponse.json();
+        alert("❌ Event creation failed after PayPal payment.\n" + err.message);
+      }
+    } catch (error) {
+      console.error("Error saving event after PayPal:", error);
+      alert("❌ Something went wrong while creating the event.");
     }
-  } catch (error) {
-    console.error("Error saving event after PayPal:", error);
-    alert("❌ Something went wrong while creating the event.");
-  }
-};
+  };
+
+  // Helper function to format date safely
+  const formatDate = (dateString) => {
+    if (!dateString) return "Not specified";
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (error) {
+      return "Invalid date";
+    }
+  };
 
   if (!eventData) {
     return <div className="loading">Loading...</div>;
@@ -84,10 +97,17 @@ const Payment = () => {
           <div className="order-summary">
             <h3>Order Summary</h3>
             <div className="event-details">
-              <h4>{eventData.eventName}</h4>
-              <p>Category: {eventData.category}</p>
-              <p>Date: {new Date(eventData.eventStart).toLocaleDateString()}</p>
-              <p>Mode: {eventData.mode}</p>
+              <h4>{eventData.title || "Event Name"}</h4>
+              <p><strong>Category:</strong> {eventData.category || "Not specified"}</p>
+              <p><strong>Date:</strong> {formatDate(eventData.dates?.eventStart)}</p>
+              <p><strong>Mode:</strong> {eventData.eventLogistics?.eventMode || "Not specified"}</p>
+              <p><strong>Location:</strong> {eventData.location || "Not specified"}</p>
+              {eventData.participantRules?.maxParticipants && (
+                <p><strong>Max Participants:</strong> {eventData.participantRules.maxParticipants}</p>
+              )}
+              {eventData.participantRules?.registrationFee > 0 && (
+                <p><strong>Registration Fee:</strong> ₹{eventData.participantRules.registrationFee}</p>
+              )}
             </div>
 
             <div className="pricing">
@@ -118,10 +138,8 @@ const Payment = () => {
                 Cancel
               </button>
 
-              {/* ✅ Reusable PayPal Component */}
               <PayPal
                 amount={calculateTotal()}
-                // description="Event Creation Fee"
                 onSuccess={handlePaymentSuccess}
               />
             </div>
