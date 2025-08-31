@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./JoinEvent.css";
 
 const JoinEvent = () => {
   const { eventId } = useParams();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [eventData, setEventData] = useState(null);
 
@@ -71,10 +72,30 @@ const JoinEvent = () => {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Successfully registered for the event!");
-    console.log("Join Event Form:", formData);
+    
+    try {
+      // You can add API call here to register the team
+      // const response = await fetch(`/api/events/${eventId}/register`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(formData)
+      // });
+      
+      // Store registration status in localStorage
+      localStorage.setItem(`event_${eventId}_registered`, 'true');
+      
+      alert("Successfully registered for the event!");
+      console.log("Join Event Form:", formData);
+      
+      // Navigate back to event details page after user clicks OK on alert
+      navigate(`/events/${eventId}`);
+      
+    } catch (error) {
+      console.error("Failed to register for event:", error);
+      alert("Registration failed. Please try again.");
+    }
   };
 
   return (

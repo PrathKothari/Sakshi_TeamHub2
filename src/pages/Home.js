@@ -14,6 +14,9 @@ const Home = () => {
   const [eventsError, setEventsError] = useState('');
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    
     const fetchTeams = async () => {
       setTeamsLoading(true);
       setTeamsError('');
@@ -49,44 +52,98 @@ const Home = () => {
       setEventsLoading(true);
       setEventsError('');
       try {
-        // TODO: Replace with actual API call when backend is ready
-        const response = await fetch('/api/events');
+        console.log('🔄 Fetching events for homepage...');
+        
+        // Fixed API endpoint to match your backend
+        const response = await fetch('http://localhost:5000/api/events');
+        console.log('📡 Response status:', response.status);
         
         if (!response.ok) {
-          throw new Error('Failed to fetch events');
+          const errorText = await response.text();
+          console.log('❌ Error response:', errorText);
+          throw new Error(`Failed to fetch events: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Events fetched:', data);
+        console.log('📦 Events API response:', data);
+        
+        // Handle the nested response structure from your Events.js
+        let eventsArray = [];
+        if (data.success && Array.isArray(data.events)) {
+          eventsArray = data.events;
+        } else if (Array.isArray(data)) {
+          eventsArray = data;
+        }
+        
+        console.log('✅ Events array:', eventsArray);
         
         // Transform the data to match the expected format
-        const transformedEvents = (data.events || []).map(event => ({
+        const transformedEvents = eventsArray.map(event => ({
           id: event._id,
-          name: event.eventName,
+          name: event.title, // Using 'title' from your event structure
           description: event.description,
           category: event.category,
-          mode: event.mode,
-          venue: event.venue,
-          platform: event.platform,
-          eventStart: event.eventStart,
-          eventEnd: event.eventEnd,
-          registrationStart: event.registrationStart,
-          registrationEnd: event.registrationEnd,
-          registrationFee: event.registrationFee,
-          maxParticipants: event.maxParticipants,
+          mode: event.eventLogistics?.eventMode || 'online',
+          venue: event.location,
+          platform: event.eventLogistics?.platform,
+          eventStart: event.dates?.eventStart,
+          eventEnd: event.dates?.eventEnd,
+          registrationStart: event.dates?.registrationStarts,
+          registrationEnd: event.dates?.registrationEnds,
+          registrationFee: event.participantRules?.registrationFee || 0,
+          maxParticipants: event.participantRules?.maxParticipants,
           createdBy: event.createdBy,
           createdAt: event.createdAt,
           tags: event.tags || []
         }));
         
-        // Show only upcoming events (limit to 6 for homepage)
+        console.log('🔄 Transformed events:', transformedEvents);
+        
+        // Improved filtering for upcoming events only
+        const now = new Date();
+        console.log('📅 Current time:', now.toISOString());
+        
         const upcomingEvents = transformedEvents
-          .filter(event => new Date(event.eventStart) > new Date())
-          .slice(0, 6);
+          .filter(event => {
+            // Check if event has valid dates
+            if (!event.eventStart && !event.eventEnd) {
+              console.log('⚠️ Event has no dates:', event.name);
+              return false; // Skip events without dates
+            }
+            
+            // Use event end date if available, otherwise use start date
+            const eventDate = event.eventEnd ? new Date(event.eventEnd) : new Date(event.eventStart);
+            
+            // Check if the date is valid
+            if (isNaN(eventDate.getTime())) {
+              console.log('⚠️ Event has invalid date:', event.name, event.eventStart, event.eventEnd);
+              return false; // Skip events with invalid dates
+            }
+            
+            const isUpcoming = eventDate > now;
+            
+            console.log(`📅 Event: ${event.name}`);
+            console.log(`   Start: ${event.eventStart}`);
+            console.log(`   End: ${event.eventEnd}`);
+            console.log(`   Comparing: ${eventDate.toISOString()} > ${now.toISOString()} = ${isUpcoming}`);
+            
+            return isUpcoming;
+          })
+          .sort((a, b) => {
+            // Sort by event start date (earliest first)
+            const dateA = new Date(a.eventStart || a.eventEnd);
+            const dateB = new Date(b.eventStart || b.eventEnd);
+            return dateA - dateB;
+          })
+          .slice(0, 6); // Limit to 6 events for homepage
+        
+        console.log('📅 Filtered upcoming events:', upcomingEvents);
+        console.log(`📊 Total events: ${transformedEvents.length}, Upcoming: ${upcomingEvents.length}`);
         
         setEvents(upcomingEvents);
+        setEventsError('');
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error('❌ Error fetching events:', error);
         setEventsError('Failed to load events. Please try again later.');
         setEvents([]); // Set empty array on error
       } finally {
@@ -103,11 +160,11 @@ const Home = () => {
   };
 
   const handleEventClick = (event) => {
-    navigate(`/event/${event.id}`, { state: { event } });
+    navigate(`/events/${event.id}`); // Updated to match your events route
   };
 
   const handleJoinTeam = () => {
-    navigate('/join-team');
+    navigate('/join-team'); // Navigate to teams page to browse and join
   };
 
   const handleCreateTeam = () => {
@@ -119,11 +176,40 @@ const Home = () => {
   };
 
   const handleJoinEvent = () => {
-    navigate('/join-event');
+    navigate('/events'); // Navigate to events page to browse
   };
 
   const handleCreateEvent = () => {
     navigate('/create-event');
+  };
+
+  // Helper function to format date for display
+  const formatEventDate = (eventStart, eventEnd) => {
+    try {
+      if (eventStart) {
+        const startDate = new Date(eventStart);
+        if (!isNaN(startDate.getTime())) {
+          return startDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          });
+        }
+      }
+      if (eventEnd) {
+        const endDate = new Date(eventEnd);
+        if (!isNaN(endDate.getTime())) {
+          return endDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          });
+        }
+      }
+      return 'TBD';
+    } catch (error) {
+      return 'TBD';
+    }
   };
 
   return (
@@ -224,7 +310,7 @@ const Home = () => {
               {isLoggedIn && (
                 <div className="feature-actions">
                   <button className="feature-btn primary" onClick={handleJoinTeam}>
-                    Join Team
+                    Browse Teams
                   </button>
                   <button className="feature-btn secondary" onClick={handleCreateTeam}>
                     Create Team
@@ -245,7 +331,7 @@ const Home = () => {
               {isLoggedIn && (
                 <div className="feature-actions">
                   <button className="feature-btn primary" onClick={handleJoinEvent}>
-                    Join Event
+                    Browse Events
                   </button>
                   <button className="feature-btn secondary" onClick={handleCreateEvent}>
                     Create Event
@@ -260,9 +346,9 @@ const Home = () => {
       {/* Explore Events */}
       <section className="events-showcase">
         <div className="container">
-          <h2 className="section-title">Explore Events</h2>
+          <h2 className="section-title">Upcoming Events</h2>
           <p className="section-subtitle">
-            Discover upcoming events and connect with the community
+            Discover exciting events happening soon
           </p>
           
           {eventsLoading ? (
@@ -273,12 +359,15 @@ const Home = () => {
           ) : eventsError ? (
             <div className="error-events">
               <p>{eventsError}</p>
+              <button className="retry-btn" onClick={() => window.location.reload()}>
+                Try Again
+              </button>
             </div>
           ) : events.length === 0 ? (
             <div className="no-events">
               <div className="no-events-content">
                 <div className="no-events-icon">📅</div>
-                <h3>No Events Available</h3>
+                <h3>No Upcoming Events</h3>
                 <p>Be the first to create an exciting event for the community!</p>
                 {isLoggedIn && (
                   <button className="create-event-btn" onClick={handleCreateEvent}>
@@ -293,14 +382,14 @@ const Home = () => {
                 <div key={event.id} className="event-showcase-card" onClick={() => handleEventClick(event)}>
                   <div className="event-card-header">
                     <div className="event-category">
-                      <span className={`category-badge ${event.category}`}>
-                        {event.category}
+                      <span className={`category-badge ${event.category?.toLowerCase() || 'general'}`}>
+                        {event.category || 'Event'}
                       </span>
                     </div>
                     <h3>{event.name}</h3>
                     <div className="event-meta">
                       <span className="event-date">
-                        📅 {new Date(event.eventStart).toLocaleDateString()}
+                        📅 {formatEventDate(event.eventStart, event.eventEnd)}
                       </span>
                       <span className="event-mode">
                         {event.mode === 'online' ? '💻' : event.mode === 'offline' ? '📍' : '🔄'} {event.mode}
@@ -309,9 +398,9 @@ const Home = () => {
                   </div>
                   
                   <p className="event-description">
-                    {event.description.length > 100 
+                    {event.description && event.description.length > 100 
                       ? `${event.description.substring(0, 100)}...` 
-                      : event.description
+                      : event.description || 'No description available'
                     }
                   </p>
                   
@@ -364,7 +453,7 @@ const Home = () => {
       {/* Teams Section */}
       <section className="teams-showcase">
         <div className="container">
-          <h2 className="section-title">Explore Our Teams</h2>
+          <h2 className="section-title">Active Teams</h2>
           <p className="section-subtitle">
             Join one of our active teams or get inspired to create your own
           </p>
@@ -377,19 +466,26 @@ const Home = () => {
           ) : teamsError ? (
             <div className="error-teams">
               <p>{teamsError}</p>
+              <button className="retry-btn" onClick={() => window.location.reload()}>
+                Try Again
+              </button>
             </div>
           ) : teams.length === 0 ? (
             <div className="no-teams">
-              <p>No teams available yet. Be the first to create one!</p>
-              {isLoggedIn && (
-                <button className="create-team-btn" onClick={handleCreateTeam}>
-                  Create First Team
-                </button>
-              )}
+              <div className="no-teams-content">
+                <div className="no-teams-icon">👥</div>
+                <h3>No Teams Available</h3>
+                <p>Be the first to create an amazing team!</p>
+                {isLoggedIn && (
+                  <button className="create-team-btn" onClick={handleCreateTeam}>
+                    Create First Team
+                  </button>
+                )}
+              </div>
             </div>
           ) : (
             <div className="teams-grid">
-              {teams.map((team) => (
+              {teams.slice(0, 6).map((team) => (
                 <div key={team.id} className="team-showcase-card" onClick={() => handleTeamClick(team)}>
                   <div className="team-card-header">
                     <h3>{team.name}</h3>
@@ -400,7 +496,12 @@ const Home = () => {
                       {team.isFull ? 'Full' : 'Open'}
                     </span>
                   </div>
-                  <p className="team-description">{team.description}</p>
+                  <p className="team-description">
+                    {team.description && team.description.length > 100 
+                      ? `${team.description.substring(0, 100)}...` 
+                      : team.description || 'No description available'
+                    }
+                  </p>
                   {team.createdBy && (
                     <p className="team-creator">
                       Created by: {team.createdBy.username || team.createdBy.email}
@@ -411,6 +512,14 @@ const Home = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+          
+          {teams.length > 6 && (
+            <div className="view-all-teams">
+              <button className="view-all-btn" onClick={handleJoinTeam}>
+                View All Teams
+              </button>
             </div>
           )}
         </div>
