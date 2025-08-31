@@ -5,7 +5,8 @@ const router = express.Router();
 import { 
     createEvent,
     getAllEvents,
-    getEventById
+    getEventById,
+    joinEvent
  } from '../controllers/eventController.js';
 
 /**
@@ -15,11 +16,14 @@ import {
  */
 
 
-//create Event Controllerimport 
+//create Event Controller import 
 router.post('/', AuthenticationMiddleware,createEvent);
 router.get('/',getAllEvents);
 
 // Add this route for getting single event
 router.get('/:id', getEventById);
+
+//join event
+router.patch('/:id', AuthenticationMiddleware, joinEvent);
 
 export default router;

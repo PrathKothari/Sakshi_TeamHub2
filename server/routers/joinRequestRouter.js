@@ -3,7 +3,8 @@ import {
   createJoinRequest, 
   getTeamJoinRequests, 
   respondToJoinRequest, 
-  getUserJoinRequests 
+  getUserJoinRequests,
+  joinedUserEvents 
 } from '../controllers/joinRequestController.js';
 import { AuthenticationMiddleware } from '../middlewares/authHandlerMiddleware.js';
 
@@ -24,4 +25,6 @@ router.patch('/:requestId/respond', respondToJoinRequest);
 // Get user's own join requests
 router.get('/user', getUserJoinRequests);
 
+//get user join Events
+router.get('/joinedevent',AuthenticationMiddleware,joinedUserEvents)
 export default router;

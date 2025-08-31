@@ -15,6 +15,7 @@ const teamApi = {
   getTeamJoinRequests: (teamId) => axiosInstance.get(`${JoinRequests}/team/${teamId}`),
   respondToJoinRequest: (requestId, action) => axiosInstance.patch(`${JoinRequests}/${requestId}/respond`, { action }),
   getUserJoinRequests: () => axiosInstance.get(`${JoinRequests}/user`),
+  getUserJoinedTeams:()=> axiosInstance.get(`${JoinRequests}/joinedevent`),
 };
 
 export default teamApi;

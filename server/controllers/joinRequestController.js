@@ -161,3 +161,18 @@ export const getUserJoinRequests = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const joinedUserEvents = async(req,res)=>{
+  try {
+    const {_id} = req.user
+    
+    const teams = await Team.find({members:{$in:[_id]}}).select("name _id");
+    const teamIds = teams.map(team=>team._id);
+    console.log(teams);
+    
+    res.status(200).json(teams);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message:"server error",error})
+  }
+}

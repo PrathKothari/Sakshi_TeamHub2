@@ -223,10 +223,12 @@
 /* Event Details Grid */
 .event-details-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* ⬅ Always 3 cards per row */
   gap: 2rem;
   margin-bottom: 3rem;
+  width: 100%;
 }
+
 
 .detail-card {
   background: #1f1f1f;
