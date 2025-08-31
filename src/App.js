@@ -17,6 +17,7 @@ import CreateEvent from './pages/CreateEvent';
 import JoinEvent from './pages/JoinEvent';
 import Payment from './pages/Payment';
 import TeamChat from './components/TeamChat'; 
+import EventDetails from './pages/EventDetails';
 
 function LandingPage() {
   return (
@@ -52,6 +53,7 @@ function App() {
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/join-event/:eventId" element={<JoinEvent />} />
                 <Route path="/team-chat/:teamId" element={<TeamChat />} /> {/* Add TeamChat route */}
+                <Route path="/events/:eventId" element={<EventDetails />} />
 
               </Routes>
             </main>

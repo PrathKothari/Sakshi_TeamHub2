@@ -4,7 +4,8 @@ import { AuthenticationMiddleware } from '../middlewares/authHandlerMiddleware.j
 const router = express.Router();
 import { 
     createEvent,
-    getAllEvents
+    getAllEvents,
+    getEventById
  } from '../controllers/eventController.js';
 
 /**
@@ -17,4 +18,8 @@ import {
 //create Event Controllerimport 
 router.post('/', AuthenticationMiddleware,createEvent);
 router.get('/',getAllEvents);
+
+// Add this route for getting single event
+router.get('/:id', getEventById);
+
 export default router;

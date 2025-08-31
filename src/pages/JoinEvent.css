@@ -205,6 +205,210 @@ textarea {
   width: fit-content;
 }
 
+/* Registration Options */
+.registration-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.option-card {
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 1.5rem;
+  background: #1a1a1a;
+  transition: all 0.3s ease;
+}
+
+.option-card:hover {
+  border-color: #ff4081;
+}
+
+.radio-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.radio-option input[type="radio"] {
+  margin-top: 0.2rem;
+  transform: scale(1.2);
+  accent-color: #ff4081;
+}
+
+.option-content h4 {
+  margin: 0 0 0.5rem 0;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.option-content p {
+  margin: 0;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.team-selector {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+}
+
+.team-selector select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.team-selector select:focus {
+  outline: none;
+  border-color: #ff4081;
+}
+
+.team-preview {
+  background: #2a2a2a;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.team-preview h5 {
+  margin: 0 0 0.75rem 0;
+  color: #ff4081;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.team-members {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.member-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #1a1a1a;
+  border-radius: 6px;
+}
+
+.member-preview span {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.member-preview .email {
+  color: #ccc;
+  font-size: 0.8rem;
+}
+
+.loading-teams {
+  text-align: center;
+  padding: 2rem;
+  color: #ccc;
+}
+
+.team-info-display {
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.team-info-display h4 {
+  margin: 0 0 1rem 0;
+  color: #ff4081;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.team-details {
+  margin-bottom: 1.5rem;
+}
+
+.detail-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #ccc;
+}
+
+.detail-row strong {
+  color: #fff;
+  min-width: 120px;
+}
+
+.additional-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.additional-fields input {
+  padding: 0.75rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.additional-fields input:focus {
+  outline: none;
+  border-color: #ff4081;
+}
+
+.member-inputs {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.remove-member-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.remove-member-btn:hover {
+  background: #c0392b;
+  transform: scale(1.1);
+}
+
+.form-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #666;
+}
+
+.form-btn:disabled:hover {
+  background: #666;
+  transform: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .join-event-page {
@@ -240,6 +444,35 @@ textarea {
   .form-btn {
     width: 100%;
   }
+
+  .registration-options {
+    gap: 0.75rem;
+  }
+  
+  .option-card {
+    padding: 1rem;
+  }
+  
+  .radio-option {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .member-inputs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .remove-member-btn {
+    align-self: flex-end;
+    margin-top: -0.5rem;
+  }
+  
+  .member-preview {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -261,6 +494,27 @@ textarea {
   
   .form-step h3 {
     font-size: 1.25rem;
+  }
+  
+  .option-card {
+    padding: 0.75rem;
+  }
+  
+  .team-preview {
+    padding: 0.75rem;
+  }
+  
+  .team-info-display {
+    padding: 1rem;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .detail-row strong {
+    min-width: auto;
   }
 }
 
