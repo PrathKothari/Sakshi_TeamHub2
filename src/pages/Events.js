@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import eventsApi from '../apis/services/eventApi';
 import './Events.css';
 
 const Events = () => {
@@ -19,27 +20,18 @@ const Events = () => {
       setLoading(true);
       console.log('🔄 Fetching events...');
       
-      const response = await fetch('http://localhost:5000/api/events');
+      const response = await eventsApi.getAllEvents();
       console.log('📡 Response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.log('❌ Error response:', errorText);
-        setError(`API Error: ${response.status} - ${errorText}`);
-        return;
-      }
-      
-      const data = await response.json();
-      console.log('📦 Raw API response:', data);
+      console.log('📦 Raw API response:', response.data);
       
       // Extract events from the nested structure
-      if (data.success && Array.isArray(data.events)) {
-        console.log('✅ Setting events:', data.events);
-        setEvents(data.events);
-      } else if (Array.isArray(data)) {
+      if (response.data.success && Array.isArray(response.data.events)) {
+        console.log('✅ Setting events:', response.data.events);
+        setEvents(response.data.events);
+      } else if (Array.isArray(response.data)) {
         // Fallback if API returns direct array
-        console.log('✅ Setting events (direct array):', data);
-        setEvents(data);
+        console.log('✅ Setting events (direct array):', response.data);
+        setEvents(response.data);
       } else {
         console.log('❌ Unexpected data structure');
         setEvents([]);

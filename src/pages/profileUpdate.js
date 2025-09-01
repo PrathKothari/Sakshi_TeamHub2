@@ -14,23 +14,40 @@ const AddIcon = () => <span>➕</span>;
 const DeleteIcon = () => <span>🗑️</span>;
 
 function ProfilePage() {
-  const { updateUser } = useContext(AuthContext);
+  const { updateUser, currentUser } = useContext(AuthContext);
   const [profile, setProfile] = useState({
-    username: "HackathonHero",
-    email: "coder@example.com",
-    age: 25,
-    gender: "Male",
-    role: "Full Stack Developer",
-    roleDescription: "Passionate about building innovative solutions that solve real-world problems.",
-    experience: "4 years",
-    location: "San Francisco, CA",
-    profilePicture: null,
+    username: currentUser?.username || "",
+    email: currentUser?.email || "",
+    age: currentUser?.age || "",
+    gender: currentUser?.gender || "",
+    role: currentUser?.role || "",
+    roleDescription: currentUser?.roleDescription || "",
+    experience: currentUser?.experience || "",
+    location: currentUser?.location || "",
+    profilePicture: currentUser?.profilePicture || null,
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
   const [newSkill, setNewSkill] = useState({ name: "", level: 50 });
+
+  // Update profile when currentUser changes
+  useEffect(() => {
+    if (currentUser) {
+      setProfile({
+        username: currentUser.username || "",
+        email: currentUser.email || "",
+        age: currentUser.age || "",
+        gender: currentUser.gender || "",
+        role: currentUser.role || "",
+        roleDescription: currentUser.roleDescription || "",
+        experience: currentUser.experience || "",
+        location: currentUser.location || "",
+        profilePicture: currentUser.profilePicture || null,
+      });
+    }
+  }, [currentUser]);
 
   // Dummy data for visualizations
   const [stats, setStats] = useState({

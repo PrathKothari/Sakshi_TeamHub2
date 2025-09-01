@@ -100,7 +100,7 @@ const TeamChat = () => {
     fileInputRef.current.click();
   };
 
-  // upload a file message to server (added)
+  // upload a file message to server 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -163,20 +163,68 @@ const TeamChat = () => {
           <div className="chat-messages">
             {messages.map((msg) => (
               <div key={msg.id} id={`message-${msg.id}`} ref={el => messageRefs.current[msg.id] = el} className="message">
-                <img src={msg.sender.profilePicture || 'default-avatar.png'} alt={msg.sender.username} className="message-avatar" />
+                <img 
+                  src={
+                    msg.sender.profilePicture 
+                      ? (msg.sender.profilePicture.startsWith('http') 
+                          ? msg.sender.profilePicture 
+                          : `http://localhost:5000${msg.sender.profilePicture.startsWith('/') ? msg.sender.profilePicture : `/${msg.sender.profilePicture}`}`)
+                      : 'https://cdn.vectorstock.com/i/1000v/92/16/default-profile-picture-avatar-user-icon-vector-46389216.jpg'
+                  } 
+                  alt={msg.sender.username} 
+                  className="message-avatar" 
+                />
                 <div className="message-content">
                   <div className="message-sender">{msg.sender.username}</div>
                   {msg.text && <p className="message-text">{msg.text}</p>}
                   {msg.fileUrl && (
                     <div className="message-file">
                       {msg.fileType && msg.fileType.startsWith('image/') ? (
-                        <a href={msg.fileUrl} target="_blank" rel="noreferrer">
-                          <img src={msg.fileUrl} alt={msg.fileName || 'attachment'} style={{ maxWidth: '240px', borderRadius: '8px' }} />
+                        <a href={`http://localhost:5000${msg.fileUrl}`} target="_blank" rel="noreferrer">
+                          <img src={`http://localhost:5000${msg.fileUrl}`} alt={msg.fileName || 'attachment'} style={{ maxWidth: '240px', borderRadius: '8px' }} />
                         </a>
+                      ) : msg.fileType && msg.fileType === 'application/pdf' ? (
+                        <div style={{ marginTop: '8px' }}>
+                          <a 
+                            href={`http://localhost:5000${msg.fileUrl}`} 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            style={{ 
+                              color: '#ff4081', 
+                              textDecoration: 'none',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              padding: '8px 12px',
+                              border: '1px solid #ff4081',
+                              borderRadius: '6px',
+                              backgroundColor: 'rgba(255, 64, 129, 0.1)'
+                            }}
+                          >
+                            📄 {msg.fileName || 'PDF Document'}
+                          </a>
+                        </div>
                       ) : (
-                        <a href={msg.fileUrl} target="_blank" rel="noreferrer" style={{ color: '#ff4081' }}>
-                          {msg.fileName || 'Download file'}
-                        </a>
+                        <div style={{ marginTop: '8px' }}>
+                          <a 
+                            href={`http://localhost:5000${msg.fileUrl}`} 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            style={{ 
+                              color: '#ff4081', 
+                              textDecoration: 'none',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              padding: '8px 12px',
+                              border: '1px solid #ff4081',
+                              borderRadius: '6px',
+                              backgroundColor: 'rgba(255, 64, 129, 0.1)'
+                            }}
+                          >
+                            📎 {msg.fileName || 'Download file'}
+                          </a>
+                        </div>
                       )}
                     </div>
                   )}

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import teamApi from '../apis/services/teamApi';
+import eventsApi from '../apis/services/eventApi';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -54,25 +55,16 @@ const Home = () => {
       try {
         console.log('🔄 Fetching events for homepage...');
         
-        // Fixed API endpoint to match your backend
-        const response = await fetch('http://localhost:5000/api/events');
+        const response = await eventsApi.getAllEvents();
         console.log('📡 Response status:', response.status);
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.log('❌ Error response:', errorText);
-          throw new Error(`Failed to fetch events: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('📦 Events API response:', data);
+        console.log('📦 Events API response:', response.data);
         
         // Handle the nested response structure from your Events.js
         let eventsArray = [];
-        if (data.success && Array.isArray(data.events)) {
-          eventsArray = data.events;
-        } else if (Array.isArray(data)) {
-          eventsArray = data;
+        if (response.data.success && Array.isArray(response.data.events)) {
+          eventsArray = response.data.events;
+        } else if (Array.isArray(response.data)) {
+          eventsArray = response.data;
         }
         
         console.log('✅ Events array:', eventsArray);

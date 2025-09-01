@@ -162,17 +162,32 @@ export const getUserJoinRequests = async (req, res) => {
   }
 };
 
+// Get all teams that the current user is a member of
+// This is used by the join event page to show teams the user can join events with
 export const joinedUserEvents = async(req,res)=>{
   try {
     const {_id} = req.user
     
-    const teams = await Team.find({members:{$in:[_id]}}).select("name _id");
-    const teamIds = teams.map(team=>team._id);
-    console.log(teams);
+    // Find all teams where the current user is a member
+    // We need more than just name and _id for the join event functionality
+    const teams = await Team.find({members:{$in:[_id]}})
+      .select("name _id members maxMembers")
+      .populate('members', 'username email') // Get member details for counting
+      .lean(); // Use lean() for better performance since we don't need Mongoose documents
     
-    res.status(200).json(teams);
+    // Calculate virtual fields that the frontend needs
+    // The frontend needs to know member count and if team is full for filtering
+    const teamsWithCounts = teams.map(team => ({
+      ...team,
+      membersCount: team.members ? team.members.length : 0, // Count actual members
+      isFull: team.members ? team.members.length >= team.maxMembers : false // Check if team is at capacity
+    }));
+    
+    console.log('User teams with counts:', teamsWithCounts);
+    
+    res.status(200).json(teamsWithCounts);
   } catch (error) {
-    console.log(error);
+    console.error('Error fetching user teams:', error);
     res.status(500).json({message:"server error",error})
   }
 }

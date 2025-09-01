@@ -11,6 +11,7 @@ import eventRouter from './routers/eventRouter.js';
 import userRouter from './routers/userRouter.js';
 import teamRouter from './routers/teamRouter.js';
 import joinRequestRouter from './routers/joinRequestRouter.js';
+import messageRouter from './routers/messageRouter.js';
 dotenv.config();
 
 const app = express();
@@ -42,6 +43,7 @@ app.use('/api/users', userRouter);
 app.use('/api/teams', teamRouter);
 app.use('/api/events', eventRouter);
 app.use('/api/join-requests', joinRequestRouter);
+app.use('/api/messages', messageRouter);
 app.get('/', (req, res) => {
   res.send('Welcome to TeamHub Backend!');
 });
