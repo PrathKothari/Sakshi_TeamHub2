@@ -8,7 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999; /* Make sure it sits above other elements */
+  z-index: 3000; /* Ensure it sits above all page content */
 }
 
 .modal {

@@ -23,14 +23,14 @@ const TeamChat = () => {
 
   const emojis = ['😊', '😂', '❤️', '👍', '🔥', '🎉', '😢', '😠', '🤔', '😎', '😮', '👏'];
 
-  // load team details and messages (changed)
+  // load team details and messages
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
         setLoading(true);
         const { data } = await teamApi.getTeamDetails(teamId);
         setTeam(data.team);
-        // Load messages from server (added)
+        // Load messages from server
         const msgsRes = await teamApi.listMessages(teamId);
         const fetched = (msgsRes.data.messages || []).map(m => ({
           id: m._id,

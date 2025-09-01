@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import "../App.css";
 import userApi from "../apis/services/userApi";
 import { AuthContext } from "../context/AuthContext";
@@ -14,17 +15,21 @@ const AddIcon = () => <span>➕</span>;
 const DeleteIcon = () => <span>🗑️</span>;
 
 function ProfilePage() {
+  const location = useLocation();
+  const { userId } = useParams();
+  const readOnly = Boolean(userId); // when routed as /user/:userId, show read-only dashboard
+  const selectedUser = location?.state?.user;
   const { updateUser, currentUser } = useContext(AuthContext);
   const [profile, setProfile] = useState({
-    username: currentUser?.username || "",
-    email: currentUser?.email || "",
-    age: currentUser?.age || "",
-    gender: currentUser?.gender || "",
-    role: currentUser?.role || "",
-    roleDescription: currentUser?.roleDescription || "",
-    experience: currentUser?.experience || "",
-    location: currentUser?.location || "",
-    profilePicture: currentUser?.profilePicture || null,
+    username: (readOnly && selectedUser?.username) || currentUser?.username || "",
+    email: (readOnly && selectedUser?.email) || currentUser?.email || "",
+    age: (readOnly && selectedUser?.age) || currentUser?.age || "",
+    gender: (readOnly && selectedUser?.gender) || currentUser?.gender || "",
+    role: (readOnly && selectedUser?.role) || currentUser?.role || "",
+    roleDescription: (readOnly && selectedUser?.roleDescription) || currentUser?.roleDescription || "",
+    experience: (readOnly && selectedUser?.experience) || currentUser?.experience || "",
+    location: (readOnly && selectedUser?.location) || currentUser?.location || "",
+    profilePicture: (readOnly && selectedUser?.profilePicture) || currentUser?.profilePicture || null,
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -34,7 +39,19 @@ function ProfilePage() {
 
   // Update profile when currentUser changes
   useEffect(() => {
-    if (currentUser) {
+    if (readOnly && selectedUser) {
+      setProfile({
+        username: selectedUser.username || "",
+        email: selectedUser.email || "",
+        age: selectedUser.age || "",
+        gender: selectedUser.gender || "",
+        role: selectedUser.role || "",
+        roleDescription: selectedUser.roleDescription || "",
+        experience: selectedUser.experience || "",
+        location: selectedUser.location || "",
+        profilePicture: selectedUser.profilePicture || null,
+      });
+    } else if (currentUser) {
       setProfile({
         username: currentUser.username || "",
         email: currentUser.email || "",
@@ -47,7 +64,9 @@ function ProfilePage() {
         profilePicture: currentUser.profilePicture || null,
       });
     }
-  }, [currentUser]);
+  }, [readOnly, selectedUser, currentUser]);
+
+  // No early returns before hooks to keep hook order stable; render-time guard below
 
   // Dummy data for visualizations
   const [stats, setStats] = useState({
@@ -257,6 +276,15 @@ function ProfilePage() {
   // Calculate win percentage
   const winPercentage = stats.hackathons.participated > 0 ? Math.round((stats.hackathons.wins / stats.hackathons.participated) * 100) : 0;
 
+  if (readOnly && !selectedUser) {
+    return (
+      <div style={{ padding: 20 }}>
+        <h2 style={{ color: '#ff4081' }}>User profile not available</h2>
+        <p style={{ color: '#ccc' }}>Open from a members list or requests to view a user profile.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="profile-dashboard">
       {/* Animated background elements */}
@@ -271,13 +299,15 @@ function ProfilePage() {
         {/* Header */}
         <header className="dashboard-header">
           <h1>Dashboard</h1>
-          <button 
-            className={`edit-toggle-btn ${isEditing ? 'active' : ''}`}
-            onClick={toggleEdit}
-          >
-            {isEditing ? <SaveIcon /> : <EditIcon />}
-            {isEditing ? 'Save Changes' : 'Edit Profile'}
-          </button>
+          {!readOnly && (
+            <button 
+              className={`edit-toggle-btn ${isEditing ? 'active' : ''}`}
+              onClick={toggleEdit}
+            >
+              {isEditing ? <SaveIcon /> : <EditIcon />}
+              {isEditing ? 'Save Changes' : 'Edit Profile'}
+            </button>
+          )}
         </header>
 
         <div className="dashboard-content">
@@ -290,18 +320,20 @@ function ProfilePage() {
                   alt="Profile"
                   className="profile-image"
                 />
-                <div className="change-photo-container">
-                  <label htmlFor="profilePicInput" className="change-photo-btn">
-                    Change Photo
-                  </label>
-                  <input
-                    id="profilePicInput"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    style={{ display: "none" }}
-                  />
-                </div>
+                {!readOnly && (
+                  <div className="change-photo-container">
+                    <label htmlFor="profilePicInput" className="change-photo-btn">
+                      Change Photo
+                    </label>
+                    <input
+                      id="profilePicInput"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      style={{ display: "none" }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="profile-info">
@@ -376,12 +408,14 @@ function ProfilePage() {
               >
                 History
               </button>
-              <button 
-                className={activeTab === "edit" ? "active" : ""}
-                onClick={() => setActiveTab("edit")}
-              >
-                Edit Profile
-              </button>
+              {!readOnly && (
+                <button 
+                  className={activeTab === "edit" ? "active" : ""}
+                  onClick={() => setActiveTab("edit")}
+                >
+                  Edit Profile
+                </button>
+              )}
             </nav>
 
             <div className="tab-content">
@@ -543,7 +577,7 @@ function ProfilePage() {
                 </div>
               )}
 
-              {activeTab === "edit" && (
+              {activeTab === "edit" && !readOnly && (
                 <div className="edit-tab">
                   <h3>Edit Profile</h3>
                   <form className="edit-profile-form" onSubmit={handleUpdate}>

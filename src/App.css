@@ -2404,6 +2404,9 @@ input[type="file"] {
   background: rgba(255, 82, 82, 0.12);
   border: 1px solid rgba(255, 82, 82, 0.35);
 }
+/* Ensure modal sits on top of content */
+.modal-overlay { z-index: 3000; }
+.modal-content { z-index: 3001; position: relative; }
 /* Global fix to remove horizontal scrollbar */
 body {
   overflow-x: hidden;

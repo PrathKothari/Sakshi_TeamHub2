@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Modal.css';
 
 const Modal = ({ profile, onClose }) => {
+  const navigate = useNavigate();
   const fallbackAvatar = 'https://cdn.vectorstock.com/i/1000v/92/16/default-profile-picture-avatar-user-icon-vector-46389216.jpg';
   const username = profile?.username || profile?.name || 'User';
   const email = profile?.email || '';
@@ -28,7 +30,12 @@ const Modal = ({ profile, onClose }) => {
         {location && <p><strong>Location:</strong> {location}</p>}
         {gender && <p><strong>Gender:</strong> {gender}</p>}
         {typeof age !== 'undefined' && <p><strong>Age:</strong> {age}</p>}
-        <button onClick={onClose}>Close</button>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 12 }}>
+          <button onClick={onClose}>Close</button>
+          <button onClick={() => navigate(`/user/${profile?._id}`, { state: { user: profile } })}>
+            View Profile
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import teamApi from '../apis/services/teamApi';
 import './JoinRequestsManager.css';
 
 const JoinRequestsManager = ({ teamId, onRequestUpdate }) => {
+  const navigate = useNavigate();
   const [joinRequests, setJoinRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -56,6 +58,12 @@ const JoinRequestsManager = ({ teamId, onRequestUpdate }) => {
   const handleProfileClick = (user) => {
     setSelectedProfile(user);
     setShowProfileModal(true);
+  };
+
+  // Navigate to a read-only user dashboard page, passing the user data
+  const handleViewProfile = (user) => {
+    if (!user || !user._id) return;
+    navigate(`/user/${user._id}`, { state: { user } });
   };
 
   const closeProfileModal = () => {
@@ -123,6 +131,13 @@ const JoinRequestsManager = ({ teamId, onRequestUpdate }) => {
                   onClick={() => handleRespondToRequest(request._id, 'reject')}
                 >
                   Reject
+                </button>
+                <button
+                  className="approve-btn"
+                  style={{ backgroundColor: '#1976d2' }}
+                  onClick={() => handleViewProfile(request.userId)}
+                >
+                  View Profile
                 </button>
               </div>
               

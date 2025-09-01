@@ -54,6 +54,7 @@ function App() {
                 <Route path="/join-event/:eventId" element={<JoinEvent />} />
                 <Route path="/team-chat/:teamId" element={<TeamChat />} /> {/* Add TeamChat route */}
                 <Route path="/events/:eventId" element={<EventDetails />} />
+                <Route path="/user/:userId" element={<ProfilePage />} />
 
               </Routes>
             </main>
