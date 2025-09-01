@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../App.css";
 import teamApi from "../apis/services/teamApi";
 import Modal from "../components/Modal";
+import { AuthContext } from "../context/AuthContext";
 
 const JoinTeam = () => {
   const [teams, setTeams] = useState([]);
@@ -16,7 +17,9 @@ const JoinTeam = () => {
   const [expandedTeamId, setExpandedTeamId] = useState(null);
   const [membersModal, setMembersModal] = useState({ open: false, team: null });
   const [selectedMember, setSelectedMember] = useState(null);
-
+  const {currentUser} = useContext(AuthContext)
+  // console.log("Current User:", currentUser._id);
+    
   useEffect(() => {
     const fetchTeams = async () => {
       try {
@@ -43,6 +46,10 @@ const JoinTeam = () => {
     };
     fetchTeams();
   }, []);
+
+  const isTeamMember = (team)=>{
+    return (team.membersList || []).some(member => member?._id === currentUser?._id);
+  }
 
   const handleJoin = (team) => {
     setSelectedTeam(team);
@@ -147,13 +154,16 @@ const JoinTeam = () => {
                   View Members
                 </button>
               </div>
-              <button
-                className="join-btn"
-                disabled={team.status !== "Open"}
-                onClick={() => handleJoin(team)}
-              >
-                {team.status === "Open" ? "Join Now" : "Full"}
-              </button>
+              
+              {!isTeamMember(team) && (
+                <button
+                  className="join-btn"
+                  disabled={team.status !== "Open" }
+                  onClick={() => handleJoin(team)}
+                >
+                  {team.status === "Open" ? "Join Now" : "Full"}
+                </button>
+              )}
             </div>
           ))
         ) : (
